@@ -267,6 +267,7 @@ minetest.register_node("default:furnace", {
 	legacy_facedir_simple = true,
 	is_ground_content = false,
 	sounds = default.node_sound_stone_defaults(),
+	stack_max = 1,
 
 	can_dig = can_dig,
 

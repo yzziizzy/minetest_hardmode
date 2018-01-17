@@ -426,6 +426,7 @@ minetest.register_node("tnt:gunpowder", {
 	drawtype = "raillike",
 	paramtype = "light",
 	is_ground_content = false,
+	stack_max = 5,
 	sunlight_propagates = true,
 	walkable = false,
 	tiles = {
@@ -588,6 +589,7 @@ function tnt.register_tnt(def)
 			description = def.description,
 			tiles = {tnt_top, tnt_bottom, tnt_side},
 			is_ground_content = false,
+			stack_max = 1,
 			groups = {dig_immediate = 2, mesecon = 2, tnt = 1, flammable = 5},
 			sounds = default.node_sound_wood_defaults(),
 			after_place_node = function(pos, placer)

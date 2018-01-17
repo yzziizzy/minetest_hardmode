@@ -44,6 +44,7 @@ local function add_simple_flower(name, desc, box, f_groups)
 		wield_image = "flowers_" .. name .. ".png",
 		sunlight_propagates = true,
 		paramtype = "light",
+		stack_max = 12,
 		walkable = false,
 		buildable_to = true,
 		stack_max = 99,

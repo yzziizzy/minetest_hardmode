@@ -28,6 +28,7 @@ function beds.register_bed(name, def)
 		inventory_image = def.inventory_image,
 		wield_image = def.wield_image,
 		drawtype = "nodebox",
+		stack_max = 1,
 		tiles = def.tiles.bottom,
 		paramtype = "light",
 		paramtype2 = "facedir",

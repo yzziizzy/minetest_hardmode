@@ -38,6 +38,7 @@ minetest.register_node("vessels:shelf", {
 		"default_wood.png", "vessels_shelf.png", "vessels_shelf.png"},
 	paramtype2 = "facedir",
 	is_ground_content = false,
+	stack_max = 2,
 	groups = {choppy = 3, oddly_breakable_by_hand = 2, flammable = 3},
 	sounds = default.node_sound_wood_defaults(),
 
@@ -100,6 +101,7 @@ minetest.register_node("vessels:glass_bottle", {
 	inventory_image = "vessels_glass_bottle.png",
 	wield_image = "vessels_glass_bottle.png",
 	paramtype = "light",
+	stack_max = 10,
 	is_ground_content = false,
 	walkable = false,
 	selection_box = {
@@ -127,6 +129,7 @@ minetest.register_node("vessels:drinking_glass", {
 	wield_image = "vessels_drinking_glass.png",
 	paramtype = "light",
 	is_ground_content = false,
+	stack_max = 14,
 	walkable = false,
 	selection_box = {
 		type = "fixed",
@@ -152,6 +155,7 @@ minetest.register_node("vessels:steel_bottle", {
 	inventory_image = "vessels_steel_bottle.png",
 	wield_image = "vessels_steel_bottle.png",
 	paramtype = "light",
+	stack_max = 5,
 	is_ground_content = false,
 	walkable = false,
 	selection_box = {
@@ -176,6 +180,7 @@ minetest.register_craft( {
 
 minetest.register_craftitem("vessels:glass_fragments", {
 	description = "Glass Fragments",
+	stack_max = 14,
 	inventory_image = "vessels_glass_fragments.png",
 })
 

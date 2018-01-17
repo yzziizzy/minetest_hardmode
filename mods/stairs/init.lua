@@ -76,6 +76,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		paramtype = "light",
 		paramtype2 = "facedir",
 		is_ground_content = false,
+		stack_max = 3,
 		groups = groups,
 		sounds = sounds,
 		node_box = {
@@ -171,6 +172,7 @@ function stairs.register_slab(subname, recipeitem, groups, images, description, 
 		paramtype2 = "facedir",
 		is_ground_content = false,
 		groups = groups,
+		stack_max = 6,
 		sounds = sounds,
 		node_box = {
 			type = "fixed",
@@ -327,6 +329,7 @@ function stairs.register_stair_inner(subname, recipeitem, groups, images, descri
 		paramtype2 = "facedir",
 		is_ground_content = false,
 		groups = groups,
+		stack_max = 7,
 		sounds = sounds,
 		node_box = {
 			type = "fixed",
@@ -405,6 +408,7 @@ function stairs.register_stair_outer(subname, recipeitem, groups, images, descri
 		is_ground_content = false,
 		groups = groups,
 		sounds = sounds,
+		stack_max = 6,
 		node_box = {
 			type = "fixed",
 			fixed = {

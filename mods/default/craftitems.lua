@@ -2,12 +2,14 @@
 
 minetest.register_craftitem("default:stick", {
 	description = "Stick",
+	stack_max = 16,
 	inventory_image = "default_stick.png",
 	groups = {stick = 1, flammable = 2},
 })
 
 minetest.register_craftitem("default:paper", {
 	description = "Paper",
+	stack_max = 100,
 	inventory_image = "default_paper.png",
 	groups = {flammable = 3},
 })
@@ -159,6 +161,7 @@ end)
 minetest.register_craftitem("default:book", {
 	description = "Book",
 	inventory_image = "default_book.png",
+	stack_max = 8,
 	groups = {book = 1, flammable = 3},
 	on_use = book_on_use,
 })
@@ -258,86 +261,109 @@ minetest.register_craftitem("default:skeleton_key", {
 
 minetest.register_craftitem("default:coal_lump", {
 	description = "Coal Lump",
+	stack_max = 9,
 	inventory_image = "default_coal_lump.png",
 	groups = {coal = 1, flammable = 1}
 })
 
 minetest.register_craftitem("default:iron_lump", {
 	description = "Iron Lump",
+	stack_max = 3,
 	inventory_image = "default_iron_lump.png",
 })
 
 minetest.register_craftitem("default:copper_lump", {
 	description = "Copper Lump",
+	stack_max = 3,
 	inventory_image = "default_copper_lump.png",
 })
 
 minetest.register_craftitem("default:tin_lump", {
 	description = "Tin Lump",
+	stack_max = 3,
 	inventory_image = "default_tin_lump.png",
 })
 
 minetest.register_craftitem("default:mese_crystal", {
 	description = "Mese Crystal",
+	stack_max = 3,
 	inventory_image = "default_mese_crystal.png",
 })
 
 minetest.register_craftitem("default:gold_lump", {
 	description = "Gold Lump",
+	stack_max = 2,
 	inventory_image = "default_gold_lump.png",
 })
 
 minetest.register_craftitem("default:diamond", {
 	description = "Diamond",
+	stack_max = 3,
 	inventory_image = "default_diamond.png",
 })
 
 minetest.register_craftitem("default:clay_lump", {
 	description = "Clay Lump",
+	stack_max = 4,
 	inventory_image = "default_clay_lump.png",
 })
 
 minetest.register_craftitem("default:steel_ingot", {
 	description = "Steel Ingot",
+	stack_max = 3,
 	inventory_image = "default_steel_ingot.png",
 })
 
 minetest.register_craftitem("default:copper_ingot", {
 	description = "Copper Ingot",
+	stack_max = 3,
 	inventory_image = "default_copper_ingot.png",
 })
 
 minetest.register_craftitem("default:tin_ingot", {
 	description = "Tin Ingot",
+	stack_max = 3,
 	inventory_image = "default_tin_ingot.png",
 })
 
 minetest.register_craftitem("default:bronze_ingot", {
 	description = "Bronze Ingot",
+	stack_max = 3,
 	inventory_image = "default_bronze_ingot.png",
 })
 
 minetest.register_craftitem("default:gold_ingot", {
 	description = "Gold Ingot",
+	stack_max = 2,
 	inventory_image = "default_gold_ingot.png"
 })
 
 minetest.register_craftitem("default:mese_crystal_fragment", {
 	description = "Mese Crystal Fragment",
+	stack_max = 27,
 	inventory_image = "default_mese_crystal_fragment.png",
 })
 
 minetest.register_craftitem("default:clay_brick", {
 	description = "Clay Brick",
+	stack_max = 4,
 	inventory_image = "default_clay_brick.png",
 })
 
 minetest.register_craftitem("default:obsidian_shard", {
 	description = "Obsidian Shard",
+	stack_max = 9,
 	inventory_image = "default_obsidian_shard.png",
 })
 
 minetest.register_craftitem("default:flint", {
 	description = "Flint",
+	stack_max = 24,
 	inventory_image = "default_flint.png"
+})
+
+minetest.register_craftitem("default:fiddlehead", {
+	description = "Fiddlehead",
+	stack_max = 24,
+	inventory_image = "default_fiddlehead.png"
 })

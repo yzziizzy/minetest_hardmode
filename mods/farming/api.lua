@@ -290,6 +290,7 @@ farming.register_plant = function(name, def)
 		inventory_image = def.inventory_image,
 		wield_image = def.inventory_image,
 		drawtype = "signlike",
+		stack_max = 24,
 		groups = g,
 		paramtype = "light",
 		paramtype2 = "wallmounted",
@@ -329,6 +330,7 @@ farming.register_plant = function(name, def)
 	-- Register harvest
 	minetest.register_craftitem(":" .. mname .. ":" .. pname, {
 		description = pname:gsub("^%l", string.upper),
+		stack_max = 12,
 		inventory_image = mname .. "_" .. pname .. ".png",
 		groups = {flammable = 2},
 	})

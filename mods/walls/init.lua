@@ -5,6 +5,7 @@ walls.register = function(wall_name, wall_desc, wall_texture, wall_mat, wall_sou
 	minetest.register_node(wall_name, {
 		description = wall_desc,
 		drawtype = "nodebox",
+		stack_max = 6,
 		node_box = {
 			type = "connected",
 			fixed = {{-1/4, -1/2, -1/4, 1/4, 1/2, 1/4}},

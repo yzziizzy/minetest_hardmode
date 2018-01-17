@@ -255,6 +255,7 @@ function doors.register(name, def)
 		description = def.description,
 		inventory_image = def.inventory_image,
 		groups = table.copy(def.groups),
+		stack_max = 2,
 
 		on_place = function(itemstack, placer, pointed_thing)
 			local pos
@@ -509,6 +510,7 @@ function doors.register_door(name, def)
 		def.protected = true
 	end
 	def.only_placer_can_open = nil
+	def.stack_max = 2
 
 	local i = name:find(":")
 	local modname = name:sub(1, i - 1)
@@ -661,7 +663,10 @@ function doors.register_trapdoor(name, def)
 
 	def_opened.drop = name_closed
 	def_opened.groups.not_in_creative_inventory = 1
+	def_opened.stack_max = 2
+	def_closed.stack_max = 2
 
+	                            
 	minetest.register_node(name_opened, def_opened)
 	minetest.register_node(name_closed, def_closed)
 
@@ -723,6 +728,7 @@ function doors.register_fencegate(name, def)
 		drop = name .. "_closed",
 		connect_sides = {"left", "right"},
 		groups = def.groups,
+		stack_max = 2,
 		sounds = def.sounds,
 		on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
 			local node_def = minetest.registered_nodes[node.name]
