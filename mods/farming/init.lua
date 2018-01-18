@@ -86,20 +86,33 @@ minetest.register_craft({
 	}
 })
 
+-- rice
 
--- Straw
+farming.register_plant("farming:rice", {
+	description = "Rice Seed",
+	paramtype2 = "meshoptions",
+	inventory_image = "farming_rice_seed.png",
+	steps = 8,
+	minlight = 13,
+	maxlight = default.LIGHT_MAX,
+	fertility = {"grassland"},
+	groups = {flammable = 4},
+	place_param2 = 3,
+})
+
+-- Straw - uses dry grass not wheat
 
 minetest.register_craft({
 	output = "farming:straw 3",
 	recipe = {
-		{"farming:wheat", "farming:wheat", "farming:wheat"},
-		{"farming:wheat", "farming:wheat", "farming:wheat"},
-		{"farming:wheat", "farming:wheat", "farming:wheat"},
+		{"group:dry_grass", "group:dry_grass", "group:dry_grass"},
+		{"group:dry_grass", "group:dry_grass", "group:dry_grass"},
+		{"group:dry_grass", "group:dry_grass", "group:dry_grass"},
 	}
 })
 
 minetest.register_craft({
-	output = "farming:wheat 3",
+	output = "default:dry_grass_1 3",
 	recipe = {
 		{"farming:straw"},
 	}

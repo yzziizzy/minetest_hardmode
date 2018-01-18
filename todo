@@ -1,0 +1,52 @@
+integrate burden into hunger
+
+add flint slot on furnace formspec, revert furnace craft recipe to normal
+
+add big list of item weights to burden
+
+fix up campfire, clean up old stuff from more_fire therein 
+
+
+features:
+-----------------------
+thirst, must drink fresh water
+vomiting (loss of health and food) on chance if drinking dirty water
+copper kettle to boil water
+
+large cargo boat with attached chest entity that cannot be picked up once placed
+
+start dropping things randomly if you carry too much
+
+coats, from fiber or hide
+boots, from hide
+
+cooking pot (copper) for fire
+cook kelp
+
+more farming
+
+rats that come eat things out of exposed chests
+
+
+mobs
+	fast rabbits
+	fast deer
+	wolves
+	gophers? (swims in dirt, eats crops, leaves little mounds)
+	various human attackers
+
+spears
+
+
+hunger seems very slow
+
+tweak rot, make more nodes rot
+
+
+nodes:
+-----------------------
+berries for bushes
+campfire * FIX
+copper pot
+copper kettle
+corn

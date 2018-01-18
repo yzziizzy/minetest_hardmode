@@ -291,9 +291,9 @@ local boat_tin = {
 	physical = true,
 	-- Warning: Do not change the position of the collisionbox top surface,
 	-- lowering it causes the boat to fall through the world if underwater
-	collisionbox = {-0.5, -0.35, -0.5, 0.5, 0.3, 0.5},
+	collisionbox = {-0.35, -0.35, -0.35, 0.35, 0.3, 0.35},
 	visual = "mesh",
-	mesh = "boats_boat.obj",
+	mesh = "boats_canoe.obj",
 	textures = {"default_tin_block.png"},
 
 	driver = nil,
@@ -388,21 +388,21 @@ function boat_tin.on_step(self, dtime)
 		local ctrl = self.driver:get_player_control()
 		local yaw = self.object:getyaw()
 		if ctrl.up then
-			self.v = self.v + 0.1
+			self.v = self.v + 0.2
 		elseif ctrl.down then
-			self.v = self.v - 0.1
+			self.v = self.v - 0.2
 		end
 		if ctrl.left then
 			if self.v < 0 then
-				self.object:setyaw(yaw - (1 + dtime) * 0.03)
+				self.object:setyaw(yaw - (1 + dtime) * 0.04)
 			else
-				self.object:setyaw(yaw + (1 + dtime) * 0.03)
+				self.object:setyaw(yaw + (1 + dtime) * 0.04)
 			end
 		elseif ctrl.right then
 			if self.v < 0 then
-				self.object:setyaw(yaw + (1 + dtime) * 0.03)
+				self.object:setyaw(yaw + (1 + dtime) * 0.04)
 			else
-				self.object:setyaw(yaw - (1 + dtime) * 0.03)
+				self.object:setyaw(yaw - (1 + dtime) * 0.04)
 			end
 		end
 	end
@@ -412,14 +412,14 @@ function boat_tin.on_step(self, dtime)
 		return
 	end
 	local s = get_sign(self.v)
-	self.v = self.v - 0.02 * s
+	self.v = self.v - 0.002 * s
 	if s ~= get_sign(self.v) then
 		self.object:setvelocity({x = 0, y = 0, z = 0})
 		self.v = 0
 		return
 	end
-	if math.abs(self.v) > 5 then
-		self.v = 5 * get_sign(self.v)
+	if math.abs(self.v) > 15 then
+		self.v = 15 * get_sign(self.v)
 	end
 
 	local p = self.object:getpos()
@@ -444,9 +444,9 @@ function boat_tin.on_step(self, dtime)
 			if y >= 5 then
 				y = 5
 			elseif y < 0 then
-				new_acce = {x = 0, y = 20, z = 0}
+				new_acce = {x = 0, y = 3, z = 0} -- float parameters. bigger = bouncier
 			else
-				new_acce = {x = 0, y = 5, z = 0}
+				new_acce = {x = 0, y = 1, z = 0}
 			end
 			new_velo = get_velocity(self.v, self.object:getyaw(), y)
 			self.object:setpos(self.object:getpos())
@@ -470,7 +470,7 @@ end
 
 
 
-minetest.register_entity("boats:boat_tin", boat)
+minetest.register_entity("boats:boat_tin", boat_tin)
 
 
 minetest.register_craftitem("boats:boat_tin", {

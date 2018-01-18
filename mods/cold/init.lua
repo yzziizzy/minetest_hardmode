@@ -55,16 +55,23 @@ function cold.update_cold(player, new_lvl)
 		return false
 	end
 	
-	-- BUG: math is borked.  
-	local sun = (math.sin(minetest.get_timeofday() * math.pi) * -2) + 1
+	local sun = (math.sin(minetest.get_timeofday() * math.pi) * -2) + .5
 	print("tod: " .. sun);
 	local pos
 	
 	local ppos = player:getpos()
 	
+	-- TODO trig this too
 	local lat = math.abs(ppos.z) / COLD_LAT_DIVISOR
 	
-	local coldfactor = sun * COLD_SUN_FACTOR + lat
+	local env = sun * COLD_SUN_FACTOR + lat
+	
+	print("cold sun: " .. (sun * COLD_SUN_FACTOR))
+	print("cold lat: " .. lat)
+	-- TODO need to check if the player is swimming
+	print("cold env: " .. env)
+	
+	local coldfactor = -2
 	
 	-- look for hot things nearby
 	pos = minetest.find_node_near(ppos, 10, {
@@ -72,6 +79,8 @@ function cold.update_cold(player, new_lvl)
 		"default:furnace_active",
 		"fire:basic_flame",
 		"fire:permanent_flame",
+		"default:lava_souce",
+		"default:lava_flowing",
 	})
 	
 	if pos ~= nil then
@@ -100,7 +109,7 @@ function cold.update_cold(player, new_lvl)
 	end
 	
 	if minetest.setting_getbool("enable_damage") == false then
-		cold[name] = 20
+		cold[name] = 0
 		return
 	end
 	
@@ -108,13 +117,16 @@ function cold.update_cold(player, new_lvl)
 	if new_lvl > 0 then
 		 lvl = new_lvl
 	else 
-		lvl = lvl + (coldfactor * COLD_FACTOR)
+		lvl = lvl + (coldfactor * COLD_FACTOR) + env
 	end
 	if lvl > COLD_MAX then
 		lvl = COLD_MAX
+	elseif lvl < 0 then
+		lvl = 0
 	end
 	cold[name].lvl = lvl
-
+	
+	print("coldfactor: " .. (coldfactor * COLD_FACTOR))
 	print("coldness: " ..lvl)
 	
 	if lvl >= COLD_SHIVER_LVL then 
@@ -128,7 +140,7 @@ function cold.update_cold(player, new_lvl)
 			end
 		end
 		
-		player:set_hp(hp)
+		--player:set_hp(hp)
 	end
 	
 	hud.change_item(player, "cold", {number = lvl})
@@ -160,7 +172,7 @@ if minetest.setting_getbool("enable_damage") then
     -- for exhaustion
 
     minetest.register_on_respawnplayer(function(player)
-		cold.update_cold(player, 20)
+		cold.update_cold(player, 0)
     end)
 end
 
