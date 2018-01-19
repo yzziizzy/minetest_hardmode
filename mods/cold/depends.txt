@@ -1,3 +1,5 @@
 default
 campfire
 hud
+burden
+fur
