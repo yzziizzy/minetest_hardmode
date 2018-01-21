@@ -1486,6 +1486,7 @@ minetest.register_node("default:bush_stem", {
 	},
 })
 
+
 minetest.register_node("default:bush_leaves", {
 	description = "Bush Leaves",
 	drawtype = "allfaces_optional",
@@ -1505,6 +1506,36 @@ minetest.register_node("default:bush_leaves", {
 
 	after_place_node = default.after_place_leaves,
 })
+
+local function register_bush_leaves_berries(opts)
+	local base = opts.base .. "_"
+	
+	minetest.register_node("default:"..base.."bush_leaves_with_berries_"..opts.name, {
+		description = opts.Desc .. "Bush Leaves",
+		drawtype = "allfaces_optional",
+		waving = 1,
+		tiles = {"default_"..base.."leaves_simple.png^"..(opts.tex or "")},
+		stack_max = 30,
+		paramtype = "light",
+		groups = {snappy = 3, flammable = 2, leaves = 1},
+		sounds = default.node_sound_leaves_defaults(),
+		after_place_node = default.after_place_leaves,
+		on_dig = function(pos, node, player)
+			local inv = player:get_inventory()
+			local item = "default:"..opts.name.." "..math.random(1,3)
+			if inv:room_for_item("main", item) then
+				inv:add_item("main", item)
+			end
+			
+			minetest.set_node(pos, {name="default:"..base.."bush_leaves"})
+		end,
+	})
+end
+
+register_bush_leaves_berries({base="", name="red_berries", tex="default_berries_red.png"})
+register_bush_leaves_berries({base="", name="blue_berries", tex="default_berries_blue.png"})
+register_bush_leaves_berries({base="", name="orange_berries", tex="default_berries_orange.png"})
+register_bush_leaves_berries({base="", name="purple_berries", tex="default_berries_purple.png"})
 
 minetest.register_node("default:bush_sapling", {
 	description = "Bush Sapling",
@@ -1579,6 +1610,10 @@ minetest.register_node("default:acacia_bush_leaves", {
 
 	after_place_node = default.after_place_leaves,
 })
+
+register_bush_leaves_berries({base="acacia", name="red_berries", tex="default_berries_red.png"})
+register_bush_leaves_berries({base="acacia", name="orange_berries", tex="default_berries_orange.png"})
+
 
 minetest.register_node("default:acacia_bush_sapling", {
 	description = "Acacia Bush Sapling",
