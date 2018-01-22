@@ -554,6 +554,29 @@ minetest.register_abm({
 
 
 --
+-- Berries growing on bushes
+--
+minetest.register_abm({
+	nodenames = {"default:acacia_bush_leaves"},
+	interval = 17,
+	chance = 5,
+	catch_up = true,
+	action = function(pos, node)
+		minetest.set_node(pos, {name = "default:acacia_bush_leaves_with_red_berries"})
+	end,
+})
+minetest.register_abm({
+	nodenames = {"default:acacia_bush_leaves"},
+	interval = 17,
+	chance = 5,
+	catch_up = true,
+	action = function(pos, node)
+		minetest.set_node(pos, {name = "default:acacia_bush_leaves_with_orange_berries"})
+	end,
+})
+
+
+--
 -- NOTICE: This method is not an official part of the API yet.
 -- This method may change in future.
 --

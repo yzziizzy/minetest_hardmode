@@ -364,6 +364,39 @@ minetest.register_craftitem("default:flint", {
 
 minetest.register_craftitem("default:fiddlehead", {
 	description = "Fiddlehead",
-	stack_max = 24,
-	inventory_image = "default_fiddlehead.png"
+	stack_max = 16,
+	inventory_image = "default_fiddlehead.png",
+	on_use = minetest.item_eat(1),
+})
+
+minetest.register_craftitem("default:cattail_root", {
+	description = "Cattail Root",
+	stack_max = 16,
+	inventory_image = "default_cattail_root.png",
+	on_use = minetest.item_eat(1),
+})
+
+minetest.register_craftitem("default:red_berries", {
+	description = "Red Berries",
+	stack_max = 16,
+	inventory_image = "default_berries_red.png",
+	on_use = minetest.item_eat(1),
+})
+minetest.register_craftitem("default:blue_berries", {
+	description = "Blue Berries",
+	stack_max = 16,
+	inventory_image = "default_berries_blue.png",
+	on_use = minetest.item_eat(1),
+})
+minetest.register_craftitem("default:orange_berries", {
+	description = "Orange Berries",
+	stack_max = 16,
+	inventory_image = "default_berries_orange.png",
+	on_use = minetest.item_eat(1),
+})
+minetest.register_craftitem("default:purple_berries", {
+	description = "Purple Berries",
+	stack_max = 16,
+	inventory_image = "default_berries_purple.png",
+	on_use = minetest.item_eat(1),
 })

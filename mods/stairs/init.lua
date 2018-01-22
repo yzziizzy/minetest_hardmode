@@ -76,7 +76,7 @@ function stairs.register_stair(subname, recipeitem, groups, images, description,
 		paramtype = "light",
 		paramtype2 = "facedir",
 		is_ground_content = false,
-		stack_max = 3,
+		stack_max = 8,
 		groups = groups,
 		sounds = sounds,
 		node_box = {

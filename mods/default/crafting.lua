@@ -763,6 +763,31 @@ minetest.register_craft({
 	}
 })
 
+
+local swords = {
+	"default:sword_wood",
+	"default:sword_stone",
+	"default:sword_steel",
+	"default:sword_bronze",
+	"default:sword_gold",
+	"default:sword_diamond",
+	"default:sword_mese",
+}
+for i in ipairs(swords) do
+	local tool = swords[i]
+	minetest.register_craft({
+		type = "shapeless",
+		output = "default:cattail_root",
+		recipe = {
+			"default:cattail_5",
+			tool
+		},
+		replacements = {
+			{ tool, tool }
+		}
+	})
+end
+
 --
 -- Crafting (tool repair)
 --

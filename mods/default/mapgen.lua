@@ -1533,6 +1533,7 @@ function default.register_mgv6_decorations()
 		spawn_by = "default:water_source",
 		num_spawn_by = 1,
 	})
+	
 
 	-- Cacti
 
@@ -1541,10 +1542,10 @@ function default.register_mgv6_decorations()
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
 		noise_params = {
-			offset = -0.012,
-			scale = 0.024,
+			offset = 0,
+			scale = 0.007,
 			spread = {x = 100, y = 100, z = 100},
-			seed = 230,
+			seed = 32469,
 			octaves = 3,
 			persist = 0.6
 		},
@@ -1921,6 +1922,31 @@ function default.register_decorations()
 		y_max = 0,
 		schematic = minetest.get_modpath("default") .. "/schematics/papyrus.mts",
 	})
+	
+	for len = 1,5 do
+		minetest.register_decoration({
+			deco_type = "simple",
+			place_on = {"default:dirt_with_dry_grass"},
+			sidelen = 16,
+			noise_params = {
+				offset = -0.3,
+				scale = 0.7,
+				spread = {x = 100, y = 100, z = 100},
+				seed = 9976,
+				octaves = 3,
+				persist = 0.7
+			},
+			y_min = -1,
+			y_max = 1,
+			decoration = "default:cattail_"..len,
+			biomes = {"savanna_shore", "savanna"},
+		--	height = 1,
+		--	height_max = 1,
+			spawn_by = "default:water_source",
+		--	num_spawn_by = 1,
+		})
+	end
+
 
 	-- Bush
 

@@ -1271,6 +1271,54 @@ minetest.register_node("default:dry_shrub", {
 	},
 })
 
+
+
+-- for t = 0,5 do
+	for l = 1,5 do
+		local items = {
+			{items = {'default:cattail_5'}}
+		}
+		if l == 5 then
+			table.insert(items, {items = {'default:cattail_seed_pod'}, rarity = 7})
+		end
+			
+		minetest.register_node("default:cattail_"..l, {
+			description = "Cattail",
+			drawtype = "plantlike",
+			waving = 1,
+			stack_max = 20,
+			visual_scale = 1.69,
+			tiles = {"default_cattail_"..l..".png"},
+			inventory_image = "default_cattail_"..l..".png",
+			wield_image = "default_cattail_"..l..".png",
+			paramtype = "light",
+			sunlight_propagates = true,
+			paramtype2 = "meshoptions",
+			walkable = false,
+			drop = {
+				max_items = 2,
+				items = items,
+			},
+			buildable_to = true,
+			groups = {snappy = 3, flora = 1, attached_node = 1, flammable = 1},
+			sounds = default.node_sound_leaves_defaults(),
+			selection_box = {
+				type = "fixed",
+				fixed = {-6 / 16, -0.5, -6 / 16, 6 / 16, 0.25 * l, 6 / 16},
+			},
+			place_param2 = 4,
+			
+			on_place = function(itemstack, placer, pointed_thing)
+				-- place a random grass node
+				t = math.random(0,4)
+				minetest.set_node(pointed_thing.above, {name = "default:cattail_"..l, param2 = t})
+			end,
+		
+		})
+	end
+
+-- end
+
 minetest.register_node("default:junglegrass", {
 	description = "Jungle Grass",
 	drawtype = "plantlike",
@@ -1508,9 +1556,13 @@ minetest.register_node("default:bush_leaves", {
 })
 
 local function register_bush_leaves_berries(opts)
-	local base = opts.base .. "_"
+	local base = ""
+	if opts.base ~= "" then
+		base = opts.base .. "_"
+	end
+	opts.Desc = opts.Desc or ""
 	
-	minetest.register_node("default:"..base.."bush_leaves_with_berries_"..opts.name, {
+	minetest.register_node("default:"..base.."bush_leaves_with_"..opts.name, {
 		description = opts.Desc .. "Bush Leaves",
 		drawtype = "allfaces_optional",
 		waving = 1,
@@ -1611,8 +1663,8 @@ minetest.register_node("default:acacia_bush_leaves", {
 	after_place_node = default.after_place_leaves,
 })
 
-register_bush_leaves_berries({base="acacia", name="red_berries", tex="default_berries_red.png"})
-register_bush_leaves_berries({base="acacia", name="orange_berries", tex="default_berries_orange.png"})
+register_bush_leaves_berries({Desc="Acacia ", base="acacia", name="red_berries", tex="default_berries_red.png"})
+register_bush_leaves_berries({Desc="Acacia ", base="acacia", name="orange_berries", tex="default_berries_orange.png"})
 
 
 minetest.register_node("default:acacia_bush_sapling", {
@@ -1650,6 +1702,61 @@ minetest.register_node("default:acacia_bush_sapling", {
 		return itemstack
 	end,
 })
+
+-- cattails
+minetest.register_node("default:dirt_with_cattail", {
+	description = "Cattail On Mud",
+	drawtype = "plantlike_rooted",
+	tiles = {"default_dirt.png"},
+	special_tiles = {
+		{name = "default_cattail_9.png", tileable_vertical = false},
+	},
+	inventory_image = "default_cattail_5.png",
+	stack_max = 2,
+	paramtype2 = "leveled",
+	--param2 = 1,
+	groups = {snappy = 3},
+	node_placement_prediction = "",
+
+	on_place = function(itemstack, placer, pointed_thing)
+		-- Call on_rightclick if the pointed node defines it
+		if pointed_thing.type == "node" and placer and
+				not placer:get_player_control().sneak then
+			local node_ptu = minetest.get_node(pointed_thing.under)
+			local def_ptu = minetest.registered_nodes[node_ptu.name]
+			if def_ptu and def_ptu.on_rightclick then
+				return def_ptu.on_rightclick(pointed_thing.under, node_ptu, placer,
+					itemstack, pointed_thing)
+			end
+		end
+
+		local pos = pointed_thing.above
+		local height = 2 --math.random(4, 6)
+		local pos_top = {x = pos.x, y = pos.y + height, z = pos.z}
+		local node_top = minetest.get_node(pos_top)
+		local def_top = minetest.registered_nodes[node_top.name]
+		local player_name = placer:get_player_name()
+
+		if def_top and def_top.liquidtype == "source" and
+				minetest.get_item_group(node_top.name, "water") > 0 then
+			if not minetest.is_protected(pos, player_name) and
+					not minetest.is_protected(pos_top, player_name) then
+				minetest.set_node(pos, {name = "default:dirt_with_cattail",
+					param2 = height * 16})
+				if not (creative and creative.is_enabled_for
+						and creative.is_enabled_for(player_name)) then
+					itemstack:take_item()
+				end
+			else
+				minetest.chat_send_player(player_name, "Node is protected")
+				minetest.record_protection_violation(pos, player_name)
+			end
+		end
+
+		return itemstack
+	end
+})
+
 
 minetest.register_node("default:sand_with_kelp", {
 	description = "Kelp On Sand",

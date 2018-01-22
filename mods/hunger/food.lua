@@ -2,6 +2,11 @@ local register_food = hunger.register_food
 
 register_food("default:apple", 2)
 register_food("default:fiddlehead", 1)
+register_food("default:cattail_root", 1)
+register_food("default:red_berries", 1)
+register_food("default:blue_berries", 1)
+register_food("default:orange_berries", 1)
+register_food("default:purple_berries", 1)
 
 if minetest.get_modpath("farming") ~= nil then
 	register_food("farming:bread", 4)
