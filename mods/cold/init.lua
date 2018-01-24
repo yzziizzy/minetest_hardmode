@@ -114,7 +114,7 @@ function cold.update_cold(player, new_lvl)
 	})
 	
 	if pos ~= nil then
-		coldfactor = -5
+		coldfactor = -20
 	else
 		-- look for really cold things
 		pos = minetest.find_node_near(ppos, 20, {
@@ -200,7 +200,7 @@ function cold.update_cold(player, new_lvl)
 			end
 		end
 		
-		--player:set_hp(hp)
+		player:set_hp(hp)
 	end
 	
 	hud.change_item(player, "cold", {number = lvl})

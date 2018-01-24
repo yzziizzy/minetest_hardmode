@@ -83,12 +83,21 @@ end)
 -- prevent digging when inventory is full
 
 local old_node_dig = minetest.node_dig
-function minetest.node_dig(pos, node, digger)
+minetest.node_dig = function(pos, node, digger)
+	local def = core.registered_nodes[node.name]
+	if def and (not def.diggable or
+			(def.can_dig and not def.can_dig(pos, digger))) then
+		log("info", diggername .. " tried to dig "
+			.. node.name .. " which is not diggable "
+			.. core.pos_to_string(pos))
+		return
+	end
 
 	if digger:is_player() then
 		
 		local inv = digger:get_inventory()
-		local drops = minetest.get_node_drops(node.name)
+		local wielded = digger and digger:get_wielded_item()
+		local drops = minetest.get_node_drops(node.name, wielded and wielded:get_name())
 		
 		local took_item = false
 		
@@ -107,7 +116,52 @@ function minetest.node_dig(pos, node, digger)
 		end
 		
 		if took_item then
-			minetest.set_node(pos, {name="air"})
+			minetest.remove_node(pos)
+			
+			if wielded then
+				local wdef = wielded:get_definition()
+				local tp = wielded:get_tool_capabilities()
+				local dp = core.get_dig_params(def and def.groups, tp)
+				if wdef and wdef.after_use then
+					wielded = wdef.after_use(wielded, digger, node, dp) or wielded
+				else
+					-- Wear out tool
+					if not core.settings:get_bool("creative_mode") then
+						wielded:add_wear(dp.wear)
+						if wielded:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+							core.sound_play(wdef.sound.breaks, {pos = pos, gain = 0.5})
+						end
+					end
+				end
+				digger:set_wielded_item(wielded)
+			end
+			
+			-- Run callback
+			if def and def.after_dig_node then
+				-- Copy pos and node because callback can modify them
+				local pos_copy = {x=pos.x, y=pos.y, z=pos.z}
+				local node_copy = {name=node.name, param1=node.param1, param2=node.param2}
+				def.after_dig_node(pos_copy, node_copy, oldmetadata, digger)
+			end
+			
+			-- Run script hook
+			local _, callback
+			for _, callback in ipairs(core.registered_on_dignodes) do
+				local origin = core.callback_origins[callback]
+				if origin then
+					core.set_last_run_mod(origin.mod)
+					--print("Running " .. tostring(callback) ..
+					--	" (a " .. origin.name .. " callback in " .. origin.mod .. ")")
+				else
+					--print("No data associated with callback")
+				end
+
+				-- Copy pos and node because callback can modify them
+				local pos_copy = {x=pos.x, y=pos.y, z=pos.z}
+				local node_copy = {name=node.name, param1=node.param1, param2=node.param2}
+				callback(pos_copy, node_copy, digger)
+			end
+			
 		end
 		
 		return
