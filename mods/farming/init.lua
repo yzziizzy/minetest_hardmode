@@ -100,6 +100,21 @@ farming.register_plant("farming:rice", {
 	place_param2 = 3,
 })
 
+minetest.register_craftitem("farming:cooked_rice", {
+	description = "Cooked Rice",
+	inventory_image = "farming_rice.png",
+	on_use = minetest.item_eat(2),
+})
+
+
+minetest.register_craft({
+	type = "cooking",
+	cooktime = 15,
+	output = "farming:cooked_rice",
+	recipe = "farming:rice"
+})
+
+
 -- Straw - uses dry grass not wheat
 
 minetest.register_craft({
