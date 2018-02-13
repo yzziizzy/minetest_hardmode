@@ -102,15 +102,18 @@ minetest.node_dig = function(pos, node, digger)
 		local took_item = false
 		
 		for i,st in ipairs(drops)  do
+			--print(st)
 			if inv:room_for_item("main", st) then
 				took_item = true
 				
 				local leftovers = inv:add_item("main", st)
 				
 				if leftovers ~= nil then
-					break
+					--print("breaking 2\n")
+					--break
 				end
 			else
+				--print("breaking 1\n")
 				break
 			end
 		end
