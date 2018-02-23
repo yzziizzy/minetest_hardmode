@@ -83,6 +83,7 @@ end)
 -- prevent digging when inventory is full
 
 local old_node_dig = minetest.node_dig
+
 minetest.node_dig = function(pos, node, digger)
 	local def = core.registered_nodes[node.name]
 	if def and (not def.diggable or
@@ -97,15 +98,21 @@ minetest.node_dig = function(pos, node, digger)
 		
 		local inv = digger:get_inventory()
 		local wielded = digger and digger:get_wielded_item()
-		local drops = minetest.get_node_drops(node.name, wielded and wielded:get_name())
+		
+		if wielded then
+		print("wielded " .. wielded:get_name())
+		else 
+		print("wielded - nil")
+		end
+		local drops = minetest.get_node_drops(node, wielded and wielded:get_name())
 		
 		local took_item = false
 		
-		for i,st in ipairs(drops)  do
-			--print(st)
+		for _,st in pairs(drops)  do
+			print(st)
 			if inv:room_for_item("main", st) then
 				took_item = true
-				
+				print("st ".. st)
 				local leftovers = inv:add_item("main", st)
 				
 				if leftovers ~= nil then
@@ -113,15 +120,19 @@ minetest.node_dig = function(pos, node, digger)
 					--break
 				end
 			else
-				--print("breaking 1\n")
+				print("breaking 1\n")
 				break
 			end
 		end
+		--minetest.handle_node_drops(pos, drops, digger)
+
+		
+		
 		
 		if took_item then
 			minetest.remove_node(pos)
 			
-			if wielded then
+			if wielded and wielded:get_name() ~= "" then
 				local wdef = wielded:get_definition()
 				local tp = wielded:get_tool_capabilities()
 				local dp = core.get_dig_params(def and def.groups, tp)
@@ -169,7 +180,7 @@ minetest.node_dig = function(pos, node, digger)
 		
 		return
 	end
-		
+	printf("shouldn't be here")
 	-- non-players
 	old_node_dig(pos, node, digger)
 end
