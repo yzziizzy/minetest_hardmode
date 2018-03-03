@@ -23,9 +23,9 @@ minetest.register_node('campfire:embers', {
 			meta:set_string('formspec', campfire.embers_formspec)
 			meta:set_string('infotext', 'Campfire');
 			local inv = meta:get_inventory()
-			inv:set_size('fuel', 1)
-			inv:set_size("src", 1)
-			inv:set_size("dst", 2)
+			inv:set_size('fuel', 8)
+-- 			inv:set_size("src", 1)
+-- 			inv:set_size("dst", 2)
 			timer:start(180)
 		end,
 	can_dig = function(pos, player)
@@ -33,17 +33,17 @@ minetest.register_node('campfire:embers', {
 			local inv = meta:get_inventory()
 			if not inv:is_empty("fuel") then
 				return false
-			elseif not inv:is_empty("dst") then
-				return false
-			elseif not inv:is_empty("src") then
-				return false
+-- 			elseif not inv:is_empty("dst") then
+-- 				return false
+-- 			elseif not inv:is_empty("src") then
+-- 				return false
 			end
 			return true
 		end,
 	on_timer = function(pos, elapsed)
 		local timer = minetest.get_node_timer(pos)
 		timer:stop()
-		minetest.set_node(pos, {name = 'campfire:kindling'})
+		minetest.set_node(pos, {name = 'campfire:embers'})
 		end,
 	after_place_node = function(pos)
 		local timer = minetest.get_node_timer(pos)
@@ -86,10 +86,10 @@ minetest.register_node('campfire:campfire', {
 			local inv = meta:get_inventory()
 			if not inv:is_empty("fuel") then
 				return false
-			elseif not inv:is_empty("dst") then
-				return false
-			elseif not inv:is_empty("src") then
-				return false
+-- 			elseif not inv:is_empty("dst") then
+-- 				return false
+-- 			elseif not inv:is_empty("src") then
+-- 				return false
 			end
 			return true
 		end,

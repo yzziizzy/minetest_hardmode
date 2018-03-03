@@ -14,6 +14,9 @@ foxglove
 lupine
 
 
+-- BUGS:
+	mapgen aloe doesn't have param2 correctly 
+
 ]]
 
 minetest.register_craftitem("herbs:aloe_vera", {
@@ -47,7 +50,7 @@ minetest.register_node("herbs:aloe_vera_plant", {
 	sounds = default.node_sound_leaves_defaults(),
 })
 
--- TODO: register decoration
+
 
 
 
@@ -79,7 +82,7 @@ minetest.register_abm({
 		if #soils > 0 then
 			local seedling = soils[math.random(#soils)]
 			local seedling_above = {x = seedling.x, y = seedling.y + 1, z = seedling.z}
-			light = minetest.get_node_light(seedling_above)
+			local light = minetest.get_node_light(seedling_above)
 			if not light or light < 10 then
 				return
 			end
@@ -97,7 +100,7 @@ if mg_name == "v6" then -- does anybody still create new worlds on v6?
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
 		noise_params = {
-			offset = 0,
+			offset = 0, -- this is probably wrong. it was not tested 
 			scale = 0.006,
 			spread = {x = 100, y = 100, z = 100},
 			seed = 436,
@@ -114,7 +117,7 @@ else
 		place_on = {"default:desert_sand"},
 		sidelen = 16,
 		noise_params = {
-			offset = -0.02,
+			offset = -0.005,
 			scale = 0.04,
 			spread = {x = 200, y = 200, z = 200},
 			seed = seed,
@@ -152,6 +155,8 @@ minetest.register_node("herbs:still", {
 	sounds = default.node_sound_snow_defaults(),
 
 	on_construct = function(pos)
+		-- needs campfire below
+		
 		
 	end,
 })

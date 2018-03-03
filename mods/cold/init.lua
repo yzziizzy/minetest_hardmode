@@ -22,6 +22,7 @@ COLD_ELV_OFFSET = -55 -- lower makes higher elevations warmer
 COLD_ELV_RATE = .035 -- .01 for 1 degree every 100 nodes 
 COLD_DEEP_Y = -512 -- height where the earth starts to get warm on its own
 COLD_DEEP_RATE = .01 -- higher makes deeper levels get warmer, per node
+COLD_SEASON_FACTOR = 2
 
 -- read/write
 function cold.read(player)
@@ -82,6 +83,16 @@ function cold.update_cold(player, new_lvl)
 		env = (COLD_UNDERGROUND_TEMP - lvl) * .5
 		print("und: ".. env)
 	else -- normal surface calculations
+		local season, season_time = seasons.get_season()
+		local seas = 0
+		if season == "winter" then
+			seas = 1
+		elseif season == "spring" then
+			seas = 1 - season_time
+		elseif season == "fall" then
+			seas = season_time
+		end
+		
 		local sun = (math.sin(minetest.get_timeofday() * math.pi) * -2) + .5
 		print("tod: " .. sun);
 		local lat = math.sin(ppos.z / (16000)) + COLD_LAT_OFFSET
@@ -90,7 +101,8 @@ function cold.update_cold(player, new_lvl)
 		print("elv: " .. elv * COLD_ELV_RATE)
 		env = sun * COLD_SUN_FACTOR + 
 					lat * COLD_LAT_FACTOR +
-					elv * COLD_ELV_RATE
+					elv * COLD_ELV_RATE + 
+					seas * COLD_SEASON_FACTOR
 				
 	
 		print("cold sun: " .. (sun * COLD_SUN_FACTOR))

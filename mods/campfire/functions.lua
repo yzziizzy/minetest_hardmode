@@ -12,13 +12,13 @@ function campfire.fire_formspec(item_percent)
 		default.gui_slots..
 		'listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]'..
 		'background[8,6.75;0,0;campfire_campfire_bg.png;true]'..
-		'label[2,.75;< Add More Wood]'..
-		'label[1.25,2; Cook Something >]'..
-		'list[current_name;fuel;1,.5;1,1;]'..
-		'list[current_name;src;4,1.75;1,1;]'..
-		'image[5,1.75;1,1;gui_furnace_arrow_bg.png^[lowpart:'..
-		(item_percent)..':gui_furnace_arrow_fg.png^[transformR270]'..
-		'list[current_name;dst;6,1.75;2,1;]'..
+-- 		'label[2,.75;< Add More Wood]'..
+-- 		'label[1.25,2; Cook Something >]'..
+		'list[current_name;fuel;1,.5;4,2;]'..
+-- 		'list[current_name;src;4,1.75;1,1;]'..
+-- 		'image[5,1.75;1,1;gui_furnace_arrow_bg.png^[lowpart:'..
+-- 		(item_percent)..':gui_furnace_arrow_fg.png^[transformR270]'..
+-- 		'list[current_name;dst;6,1.75;2,1;]'..
 		'list[current_player;main;0,2.75;8,1;]'..
 		'list[current_player;main;0,4;8,3;8]'..
 		default.get_hotbar_bg(0,2.75)
@@ -30,12 +30,12 @@ campfire.embers_formspec =
 default.gui_slots..
 'listcolors[#00000069;#5A5A5A;#141318;#30434C;#FFF]'..
 'background[8,6.75;0,0;campfire_campfire_bg.png;true]'..
-'label[2,.75;< Add More Wood]'..
-'label[1.25,2; Cook Something >]'..
-'list[current_name;fuel;1,.5;1,1;]'..
-'list[current_name;src;4,1.75;1,1;]'..
-'image[5,1.75;1,1;gui_furnace_arrow_bg.png^[transformR270]'..
-'list[current_name;dst;6,1.75;2,1;]'..
+-- 'label[2,.75;< Add More Wood]'..
+-- 'label[1.25,2; Cook Something >]'..
+'list[current_name;fuel;1,.5;4,2;]'..
+-- 'list[current_name;src;4,1.75;1,1;]'..
+-- 'image[5,1.75;1,1;gui_furnace_arrow_bg.png^[transformR270]'..
+-- 'list[current_name;dst;6,1.75;2,1;]'..
 'list[current_player;main;0,2.75;8,1;]'..
 'list[current_player;main;0,4;8,3;8]'..
 default.get_hotbar_bg(0,2.75)
