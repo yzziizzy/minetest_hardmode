@@ -1,165 +1,163 @@
-minetest.register_node("rot:rotten_wood_1", {
-	description = "Rotting Apple Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_wood.png^[colorize:black:90"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {choppy = 2, rotten = 1, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-minetest.register_node("rot:rotten_junglewood_1", {
-	description = "Rotting Jungle Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_junglewood.png^[colorize:black:80"},
-	stack_max = 4,
-	is_ground_content = false,
-	groups = {choppy = 2, rotten = 1, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-minetest.register_node("rot:rotten_pine_wood_1", {
-	description = "Rotting Pine Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_pine_wood.png^[colorize:black:80"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {choppy = 3, rotten = 1, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
 
 
-minetest.register_node("rot:rotten_acacia_wood_1", {
-	description = "Rotting Acacia Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_acacia_wood.png^[colorize:black:80"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {choppy = 2, rotten = 1, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-minetest.register_node("rot:rotten_aspen_wood_1", {
-	description = "Rotting Aspen Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	stack_max = 4,
-	tiles = {"default_aspen_wood.png^[colorize:black:80"},
-	is_ground_content = false,
-	groups = {choppy = 3, rotten = 1, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
+rot = {}
 
 
---- severe rot 
-
-minetest.register_node("rot:rotten_wood_2", {
-	description = "Rotten Apple Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_wood.png^[colorize:black:180"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {falling_node = 1, rotten = 2, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-minetest.register_node("rot:rotten_junglewood_2", {
-	description = "Rotten Jungle Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_junglewood.png^[colorize:black:180"},
-	stack_max = 4,
-	is_ground_content = false,
-	groups = {falling_node = 1, rotten = 2, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-minetest.register_node("rot:rotten_pine_wood_2", {
-	description = "Rotten Pine Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_pine_wood.png^[colorize:black:180"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {falling_node = 1, rotten = 2, choppy = 3, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-
-minetest.register_node("rot:rotten_acacia_wood_2", {
-	description = "Rotten Acacia Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	tiles = {"default_acacia_wood.png^[colorize:black:180"},
-	is_ground_content = false,
-	stack_max = 4,
-	groups = {falling_node = 1, rotten = 2, choppy = 2, oddly_breakable_by_hand = 2, flammable = 2, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-minetest.register_node("rot:rotten_aspen_wood_2", {
-	description = "Rotten Aspen Wood Planks",
-	paramtype2 = "facedir",
-	place_param2 = 0,
-	stack_max = 4,
-	tiles = {"default_aspen_wood.png^[colorize:black:180"},
-	is_ground_content = false,
-	groups = {falling_node = 1, rotten = 2, choppy = 3, oddly_breakable_by_hand = 2, flammable = 3, wood = 1},
-	sounds = default.node_sound_wood_defaults(),
-})
-
-
-
-local downgrades = {
-	["default:wood"] = "rot:rotten_wood_1",
-	["default:aspen_wood"] = "rot:rotten_aspen_wood_1",
-	["default:acacia_wood"] = "rot:rotten_acacia_wood_1",
-	["default:pine_wood"] = "rot:rotten_pine_wood_1",
-	["default:junglewood"] = "rot:rotten_junglewood_1",
+function deepclone(t)
+	if type(t) ~= "table" then 
+		return t 
+	end
 	
-	["rot:rotten_wood_1"] = "rot:rotten_wood_2",
-	["rot:rotten_aspen_wood_1"] = "rot:rotten_aspen_wood_2",
-	["rot:rotten_acacia_wood_1"] = "rot:rotten_acacia_wood_2",
-	["rot:rotten_pine_wood_1"] = "rot:rotten_pine_wood_2",
-	["rot:rotten_junglewood_1"] = "rot:rotten_junglewood_2",
+	local meta = getmetatable(t)
+	local target = {}
+	
+	for k, v in pairs(t) do
+		if type(v) == "table" then
+			target[k] = deepclone(v)
+		else
+			target[k] = v
+		end
+	end
+	
+	setmetatable(target, meta)
+	
+	return target
+end
 
-	["rot:rotten_wood_2"] = "default:dirt",
-	["rot:rotten_aspen_wood_2"] = "default:dirt",
-	["rot:rotten_acacia_wood_2"] = "default:dirt",
-	["rot:rotten_pine_wood_2"] = "default:dirt",
-	["rot:rotten_junglewood_2"] = "default:dirt",
+local function splitname(name)
+	local c = string.find(name, ":", 1)
+	return string.sub(name, 1, c - 1), string.sub(name, c + 1, string.len(name))
+end
+
+
+-- change table
+local downgrades = {}
+
+-- for abm node list
+local abm_list_1 = {}
+local abm_list_2 = {}
+local abm_list_final = {}
+
+
+
+
+rot.register_node = function(old, tiles) 
+	
+	-- level 1
+	local def = deepclone(minetest.registered_nodes[old])
+	def.groups.not_in_creative_inventory = 1
+	def.groups.rotten = 1
+	def.description = "Rotting " .. def.description
+	
+	local oldmod, oldname = splitname(old)
+	local name1 = "rot:"..oldmod.."_"..oldname.."_1"
+	table.insert(abm_list_1, old)
+	downgrades[old] = name1
+	
+	if tiles then
+		def.tiles = tiles
+	else
+		for k, v in pairs(def.tiles) do
+			def.tiles[k] = def.tiles[k].."^[colorize:black:80"
+		end
+	end
+	
+	if drops then 
+		def.drops = drops
+	else
+		def.drops = name1
+	end
+	
+	minetest.register_node(name1, def)
+	
+	-- level 2
+	def = deepclone(minetest.registered_nodes[old])
+	def.groups.not_in_creative_inventory = 1
+	def.groups.rotten = 2
+	def.description = "Rotten " .. def.description
+	
+	local oldmod, oldname = splitname(old)
+	local name2 = "rot:"..oldmod.."_"..oldname.."_2"
+	table.insert(abm_list_2, name1)
+	downgrades[name1] = name2
+	
+	if tiles then
+		def.tiles = tiles
+	else
+		for k, v in pairs(def.tiles) do
+			def.tiles[k] = def.tiles[k].."^[colorize:black:180"
+		end
+	end
+	
+	if drops then 
+		def.drops = drops
+	else
+		def.drops = name2
+	end
+	
+	minetest.register_node(name2, def)
+	
+	-- for the final transition to dirt
+	table.insert(abm_list_final, name2)
+	downgrades[name2] = "default:dirt"
+	
+	
+end
+
+
+
+rot.register_node("default:wood")
+rot.register_node("default:aspen_wood")
+rot.register_node("default:acacia_wood")
+rot.register_node("default:pine_wood")
+rot.register_node("default:junglewood")
+
+rot.register_node("default:fence_wood")
+rot.register_node("default:fence_acacia_wood")
+rot.register_node("default:fence_junglewood")
+rot.register_node("default:fence_pine_wood")
+rot.register_node("default:fence_aspen_wood")
+
+rot.register_node("farming:straw")
+
+
+local stairlist = {
+	"wood",
+	"aspen_wood",
+	"pine_wood",
+	"acacia_wood",
+	"junglewood",
+	"straw"
 }
 
+-- BUG: stairs has complicated images
+-- for _,v in ipairs(stairlist) do
+-- 	rot.register_node("stairs:stair_"..v)
+-- 	rot.register_node("stairs:stair_outer_"..v)
+-- 	rot.register_node("stairs:stair_inner_"..v)
+-- 	rot.register_node("stairs:slab_"..v)
+-- end
+
+-- todo: stairs/slabs, chests, doors, beds
+
+
 minetest.register_abm({
-	nodenames = {
-		"default:wood",
-		"default:aspen_wood",
-		"default:acacia_wood",
-		"default:pine_wood",
-		"default:junglewood",
-	},
+	nodenames = abm_list_1,
  	neighbors = {"group:soil", "group:rotten", "group:water"},
-	interval = 15,
+	interval = 1,--15,
 	chance = 100,
 	catch_up = true,
 	action = function(pos, node)
-		
-		minetest.set_node(pos, {name= downgrades[node.name]})
+		local n = downgrades[node.name]
+		if n then
+			minetest.set_node(pos, {name = n})
+		end
 	end,
 })
 
 
 minetest.register_abm({
-	nodenames = {
-		"rot:rotten_wood_1",
-		"rot:rotten_aspen_wood_1",
-		"rot:rotten_acacia_wood_1",
-		"rot:rotten_pine_wood_1",
-		"rot:rotten_junglewood_1",
-	},
+	nodenames = abm_list_2,
 	neighbors = {"group:soil", "group:rotten", "group:water"},
 	interval = 10,
 	chance = 80,
@@ -171,13 +169,7 @@ minetest.register_abm({
 })
 
 minetest.register_abm({
-	nodenames = {
-		"rot:rotten_wood_2",
-		"rot:rotten_aspen_wood_2",
-		"rot:rotten_acacia_wood_2",
-		"rot:rotten_pine_wood_2",
-		"rot:rotten_junglewood_2",
-	},
+	nodenames = abm_list_final,
 	neighbors = {"group:soil", "group:rotten", "group:water"},
 	interval = 10,
 	chance = 50,
