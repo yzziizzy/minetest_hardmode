@@ -143,13 +143,13 @@ local function hunger_globaltimer(dtime)
 			local name = player:get_player_name()
 			local tab = hunger[name]
 			if tab then
-				local air = player:get_breath() or 0
+--				local air = player:get_breath() or 0
 				local hp = player:get_hp()
 
 				-- heal player by 1 hp if not dead and saturation is > 15 (of 30) player is not drowning
-				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
-					player:set_hp(hp + HUNGER_HEAL)
-				end
+-- 				if tonumber(tab.lvl) > HUNGER_HEAL_LVL and hp > 0 and air > 0 then
+-- 					player:set_hp(hp + HUNGER_HEAL)
+-- 				end
 
 				-- or damage player by 1 hp if saturation is < 2 (of 30)
 				if tonumber(tab.lvl) < HUNGER_STARVE_LVL then

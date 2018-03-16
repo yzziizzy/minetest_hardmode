@@ -25,7 +25,14 @@ minetest.register_craftitem("herbs:aloe_vera", {
 	inventory_image = "herbs_aloe_vera_plant.png",
 	groups = {},
 	on_use = function(itemstack, user, pointed_thing)
-		
+		local hp = user:get_hp()
+		if hp < 20 then
+			hp = hp + 1
+			if hp > 20 then
+				hp = 20
+			end
+			user:set_hp(hp)
+		end
 	end,
 })
 
