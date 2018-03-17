@@ -13,6 +13,10 @@ local base_burden = 1 -- don't mess with this one
 local burden_scale = .002 -- this is the one to adjust that you are looking for
 local base_speed = 1.5 -- a little faster than normal, when carrying nothing
 
+
+local speed_bonuses = {}
+
+
 local function set_burden(player)
 
 	local pname = player:get_player_name()
@@ -20,6 +24,8 @@ local function set_burden(player)
 	local main = inv:get_list("main")
 
 	local b = 0
+	local total_bonus = 0
+	local active_bonus = {}
 	
 	local hot = player:hud_get_hotbar_itemcount()
 	
@@ -29,7 +35,14 @@ local function set_burden(player)
 		
 		if i <= hot then
 			burden.players[pname].hotbar[i] = name
+		
+			local bonus = speed_bonuses[name] 
+			if bonus and active_bonus[name] == nil then
+				total_bonus = total_bonus + b
+				active_bonus[name] = true
+			end
 		end
+		
 		
 		if name ~= "" then
 			
@@ -54,7 +67,7 @@ local function set_burden(player)
 	end
 	
 	player:set_physics_override({
-		speed = base_speed - (b * burden_scale),
+		speed = base_speed - (b * burden_scale) + total_bonus,
 	})
 		
 	
@@ -196,3 +209,25 @@ minetest.item_drop = function(itemstack, dropper, pos)
 end
 
 
+
+-- bonus items
+
+
+minetest.register_craftitem("burden:sandals", {
+	description = "Sandals",
+	stack_max = 1,
+	inventory_image = "burden_sandals.png",
+	groups = {},
+})
+
+minetest.register_craft({
+	output = 'burden:sandals 1',
+	recipe = {
+		{'', '', ''},
+		{'default:papyrus', 'farming:string', 'default:papyrus'},
+		{'default:papyrus', '', 'default:papyrus'},
+	}
+})
+
+
+speed_bonuses["burden:sandals"] = 1.5
