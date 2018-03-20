@@ -32,7 +32,9 @@ minetest.register_craftitem("herbs:aloe_vera", {
 				hp = 20
 			end
 			user:set_hp(hp)
+			itemstack:take_item()
 		end
+		return itemstack
 	end,
 })
 
@@ -48,12 +50,18 @@ minetest.register_node("herbs:aloe_vera_plant", {
 	sunlight_propagates = true,
 	walkable = false,
 	stack_max = 1,
-	drops = {"herbs:aloe_vera 2"},
+	drop = {
+		max_items = 1,
+		items = {
+			{items = {"herbs:aloe_vera_plant"}, rarity = 10},
+			{items = {"herbs:aloe_vera 2"}},
+		},
+	},
 	selection_box = {
 		type = "fixed",
 		fixed = {-4 / 16, -0.5, -4 / 16, 4 / 16, 7 / 16, 4 / 16}
 	},
-	groups = {snappy = 2, flammable = 2, attached_node = 1},
+	groups = {snappy = 2, flammable = 2, attached_node = 1, oddly_breakable_by_hand = 1},
 	sounds = default.node_sound_leaves_defaults(),
 })
 

@@ -3,7 +3,6 @@
 seasons = {}
 
 
-
 function deepclone(t)
 	if type(t) ~= "table" then 
 		return t 
@@ -47,12 +46,15 @@ local changes_lookup = {
 	winter = {},
 }
 
-
+local function splitname(name)
+	local c = string.find(name, ":", 1)
+	return string.sub(name, 1, c - 1), string.sub(name, c + 1, string.len(name))
+end
 
 
 function reg_changes(ssn, oldmod, oldname)
 	local old = oldmod..":"..oldname
-	local new = "seasons:"..ssn.."_"..oldname
+	local new = "seasons:"..ssn.."_"..oldmod.."_"..oldname
 
 	core_lookup[old] = old
 	if ssn == "summer" then -- minetest is in "summer" by default

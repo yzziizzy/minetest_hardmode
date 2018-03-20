@@ -10,11 +10,12 @@ burden.players = {}
 
 
 local base_burden = 1 -- don't mess with this one
-local burden_scale = .002 -- this is the one to adjust that you are looking for
+local burden_scale = .004 -- this is the one to adjust that you are looking for
 local base_speed = 1.5 -- a little faster than normal, when carrying nothing
 
 
 local speed_bonuses = {}
+local wear_rates = {}
 
 
 local function set_burden(player)
@@ -38,8 +39,14 @@ local function set_burden(player)
 		
 			local bonus = speed_bonuses[name] 
 			if bonus and active_bonus[name] == nil then
-				total_bonus = total_bonus + b
+				total_bonus = total_bonus + bonus
 				active_bonus[name] = true
+				
+				st:add_wear(wear_rates[name])
+				--if st:get_count() == 0 and wdef.sound and wdef.sound.breaks then
+				--	core.sound_play(wdef.sound.breaks, {pos = pos, gain = 0.5})
+				--end
+				-- TODO: wear the sandals
 			end
 		end
 		
@@ -66,6 +73,9 @@ local function set_burden(player)
 		end
 	end
 	
+	inv:set_list("main", main)
+	
+	print("total_bonus: ".. total_bonus)
 	player:set_physics_override({
 		speed = base_speed - (b * burden_scale) + total_bonus,
 	})
@@ -98,12 +108,9 @@ end)
 local old_node_dig = minetest.node_dig
 
 minetest.node_dig = function(pos, node, digger)
-	local def = core.registered_nodes[node.name]
+	local def = minetest.registered_nodes[node.name]
 	if def and (not def.diggable or
 			(def.can_dig and not def.can_dig(pos, digger))) then
-		log("info", diggername .. " tried to dig "
-			.. node.name .. " which is not diggable "
-			.. core.pos_to_string(pos))
 		return
 	end
 
@@ -213,7 +220,7 @@ end
 -- bonus items
 
 
-minetest.register_craftitem("burden:sandals", {
+minetest.register_tool("burden:sandals", {
 	description = "Sandals",
 	stack_max = 1,
 	inventory_image = "burden_sandals.png",
@@ -230,4 +237,5 @@ minetest.register_craft({
 })
 
 
-speed_bonuses["burden:sandals"] = 1.5
+speed_bonuses["burden:sandals"] = .2
+wear_rates["burden:sandals"] = 50
