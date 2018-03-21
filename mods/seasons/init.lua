@@ -164,7 +164,7 @@ falling leaf particles
 function reg_leaves(ssn)
 	reg_changes(ssn, "default", "leaves")
 	
-	minetest.register_node("seasons:"..ssn.."_leaves", {
+	minetest.register_node("seasons:"..ssn.."_default_leaves", {
 		description = "Apple Tree Leaves",
 		drawtype = "allfaces_optional",
 		waving = 1,
@@ -185,7 +185,7 @@ function reg_leaves(ssn)
 				{
 					-- player will get leaves only if he get no saplings,
 					-- this is because max_items is 1
-					items = {'seasons:'..ssn..'_leaves'},
+					items = {'seasons:'..ssn..'_default_leaves'},
 				}
 			}
 		},
@@ -203,7 +203,7 @@ reg_changes("summer", "default", "leaves")
 function reg_aspen_leaves(ssn)
 	reg_changes(ssn, "default", "aspen_leaves")
 	
-	minetest.register_node("seasons:"..ssn.."_aspen_leaves", {
+	minetest.register_node("seasons:"..ssn.."_default_aspen_leaves", {
 		description = "Aspen Tree Leaves",
 		drawtype = "allfaces_optional",
 		tiles = {"seasons_"..ssn.."_aspen_leaves.png"},
@@ -216,7 +216,7 @@ function reg_aspen_leaves(ssn)
 			max_items = 1,
 			items = {
 				{items = {"default:aspen_sapling"}, rarity = 20},
-				{items = {"seasons:"..ssn.."_aspen_leaves"}}
+				{items = {"seasons:"..ssn.."_default_aspen_leaves"}}
 			}
 		},
 		sounds = default.node_sound_leaves_defaults(),
