@@ -148,7 +148,7 @@ function cold.update_cold(player, new_lvl)
 		else -- look for chilly things
 			local pos = minetest.find_node_near(ppos, 20, {
 				"default:dirt_with_coniferous_litter",
-				"default:silver_sand", -- cold desert
+		--		"default:silver_sand", -- cold desert -- also appears underground randomly, making you randomly freeze
 			})
 			
 			if pos ~= nil then

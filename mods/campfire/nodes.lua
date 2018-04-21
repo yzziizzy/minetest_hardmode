@@ -12,7 +12,7 @@ minetest.register_node('campfire:embers', {
 	groups = {dig_immediate=3, flammable=1,},
 	paramtype = 'light',
 	light_source = 5,
-	drop = 'campfire:kindling',
+	drop = 'campfire:embers',
 	selection_box = {
 		type = 'fixed',
 		fixed = { -0.48, -0.5, -0.48, 0.48, 0.0, 0.48 },
