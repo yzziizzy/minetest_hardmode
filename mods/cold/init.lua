@@ -13,7 +13,7 @@ COLD_FREEZE = 1.5
 COLD_SHIVER_LVL = 15
 COLD_FREEZE_LVL = 19
 COLD_SHIVER_CHANCE = 5
-COLD_SUN_FACTOR = 1.5
+COLD_SUN_FACTOR = 10.5
 COLD_LAT_FACTOR = 10
 COLD_LAT_OFFSET = 0 -- -0.4 -- .5 for even. lower is warmer.
 COLD_UNDERGROUND_TEMP = 12 -- target temp to approach 
@@ -62,6 +62,11 @@ function cold.save(player)
 	return true
 end
 
+
+local function sigmoid(x) 
+	return 1 / (1 + math.exp(.001 * (x - 20)))
+end
+
 function cold.update_cold(player, new_lvl)
 	local name = player:get_player_name() or nil
 	if not name or not cold[name] then
@@ -73,14 +78,15 @@ function cold.update_cold(player, new_lvl)
 	
 	local lvl = cold[name].lvl
 	
-	if ppos.y < COLD_DEEP_Y then
+	if ppos.y < COLD_DEEP_Y then -- it gets warmer as you go really deep
 		
 		env = (ppos.y + COLD_DEEP_Y) * COLD_DEEP_RATE
 		print("deep: ".. env)
-	elseif ppos.y < COLD_UNDERGROUND_Y then
+	elseif ppos.y < COLD_UNDERGROUND_Y then -- caves near the surface have even, cool temp
 		
 		-- approach the underground temp
-		env = (COLD_UNDERGROUND_TEMP - lvl) * .5
+-- 		env = (COLD_UNDERGROUND_TEMP - lvl) * .5
+		env = COLD_UNDERGROUND_TEMP -- now it's just chilly down there
 		print("und: ".. env)
 	else -- normal surface calculations
 		local season, season_time = seasons.get_season()
@@ -94,26 +100,27 @@ function cold.update_cold(player, new_lvl)
 		end
 		
 		local sun = (math.sin(minetest.get_timeofday() * math.pi) * -2) + .5
-		print("tod: " .. sun);
 		local lat = math.sin(ppos.z / (16000)) + COLD_LAT_OFFSET
 		
 		local elv = math.max(ppos.y + COLD_ELV_OFFSET, 0)
-		print("elv: " .. elv * COLD_ELV_RATE)
+		--print("elv: " .. elv * COLD_ELV_RATE)
 		env = sun * COLD_SUN_FACTOR + 
 					lat * COLD_LAT_FACTOR +
 					elv * COLD_ELV_RATE + 
 					seas * COLD_SEASON_FACTOR
 				
 	
-		print("cold sun: " .. (sun * COLD_SUN_FACTOR))
-		print("cold lat: " .. (lat * COLD_LAT_FACTOR))
+		print("\n cold sun: " .. (sun * COLD_SUN_FACTOR))
+		print(" cold lat: " .. (lat * COLD_LAT_FACTOR))
+		print(" cold elv: " .. (elv * COLD_ELV_RATE))
+		print(" cold ssn: " .. (seas * COLD_SEASON_FACTOR))
 	end
 	
 	-- TODO need to check if the player is swimming
 	print("cold env: " .. env)
 	
 	local pos
-	local coldfactor = -2
+	local coldfactor = 0
 	
 	-- look for hot things nearby
 	pos = minetest.find_node_near(ppos, 10, {
@@ -137,7 +144,7 @@ function cold.update_cold(player, new_lvl)
 		})
 		
 		if pos ~= nil then
-			coldfactor = 10
+			coldfactor = 30
 		else -- look for chilly things
 			local pos = minetest.find_node_near(ppos, 20, {
 				"default:dirt_with_coniferous_litter",
@@ -145,7 +152,7 @@ function cold.update_cold(player, new_lvl)
 			})
 			
 			if pos ~= nil then
-				coldfactor = 3
+				coldfactor = 15
 			end
 		end
 	end
@@ -186,11 +193,22 @@ function cold.update_cold(player, new_lvl)
 		end
 	end
 	
+	local effective_temp = coldfactor + env + clothes
+	print("effective_temp: "..effective_temp)
+	
 	if new_lvl > 0 then
 		 lvl = new_lvl
 	else 
-		lvl = lvl + (coldfactor * COLD_FACTOR) + env + clothes
+-- 		lvl = lvl + (coldfactor * COLD_FACTOR) + env + clothes
+		
+		SHIVER_RATE = .2
+		local diff = (effective_temp - lvl)
+		local lvl_d = diff * sigmoid(diff)
+		print("lvl_d: "..lvl_d)
+		lvl = lvl + lvl_d
 	end
+	
+	
 	if lvl > COLD_MAX then
 		lvl = COLD_MAX
 	elseif lvl < 0 then
@@ -198,7 +216,7 @@ function cold.update_cold(player, new_lvl)
 	end
 	cold[name].lvl = lvl
 	
-	print("coldfactor: " .. (coldfactor * COLD_FACTOR))
+	print("coldfactor: " .. (coldfactor))
 	print("coldness: " ..lvl)
 	
 	if lvl >= COLD_SHIVER_LVL then 
