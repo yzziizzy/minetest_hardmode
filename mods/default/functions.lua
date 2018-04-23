@@ -342,6 +342,7 @@ default.after_place_leaves = function(pos, placer, itemstack, pointed_thing)
 end
 
 -- Leafdecay
+-- for trunks
 local function leafdecay_after_destruct(pos, oldnode, def)
 	for _, v in pairs(minetest.find_nodes_in_area(vector.subtract(pos, def.radius),
 			vector.add(pos, def.radius), def.leaves)) do
@@ -353,6 +354,7 @@ local function leafdecay_after_destruct(pos, oldnode, def)
 	end
 end
 
+-- for leaves
 local function leafdecay_on_timer(pos, def)
 	if minetest.find_node_near(pos, def.radius, def.trunks) then
 		return false

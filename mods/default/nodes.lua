@@ -629,6 +629,18 @@ minetest.register_node("default:tree", {
 
 	on_place = minetest.rotate_node
 })
+minetest.register_node("default:live_tree", {
+	description = "Apple Tree",
+	tiles = {"default_tree_top.png", "default_tree_top.png", "default_tree.png"},
+	paramtype2 = "facedir",
+	is_ground_content = false,
+	stack_max = 1,
+	groups = {tree = 1, live_tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+	sounds = default.node_sound_wood_defaults(),
+	drop = "default:tree",
+	
+	on_place = minetest.rotate_node
+})
 
 minetest.register_node("default:wood", {
 	description = "Apple Wood Planks",
@@ -746,6 +758,20 @@ minetest.register_node("default:jungletree", {
 	on_place = minetest.rotate_node
 })
 
+minetest.register_node("default:live_jungletree", {
+	description = "Jungle Tree",
+	tiles = {"default_jungletree_top.png", "default_jungletree_top.png",
+		"default_jungletree.png"},
+	paramtype2 = "facedir",
+	is_ground_content = false,
+	stack_max = 1,
+	groups = {tree = 1, choppy = 2, oddly_breakable_by_hand = 1, flammable = 2},
+	sounds = default.node_sound_wood_defaults(),
+	drop = "default:jungletree",
+	
+	on_place = minetest.rotate_node
+})
+
 minetest.register_node("default:junglewood", {
 	description = "Jungle Wood Planks",
 	paramtype2 = "facedir",
@@ -827,6 +853,20 @@ minetest.register_node("default:pine_tree", {
 	groups = {tree = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3},
 	sounds = default.node_sound_wood_defaults(),
 
+	on_place = minetest.rotate_node
+})
+
+minetest.register_node("default:live_pine_tree", {
+	description = "Pine Tree",
+	tiles = {"default_pine_tree_top.png", "default_pine_tree_top.png",
+		"default_pine_tree.png"},
+	paramtype2 = "facedir",
+	stack_max = 1,
+	is_ground_content = false,
+	groups = {tree = 1, choppy = 3, oddly_breakable_by_hand = 1, flammable = 3},
+	sounds = default.node_sound_wood_defaults(),
+	drop = "default:pine_tree",
+	
 	on_place = minetest.rotate_node
 })
 
@@ -2799,7 +2839,7 @@ minetest.register_node("default:cloud", {
 
 if minetest.get_mapgen_setting("mg_name") == "v6" then
 	default.register_leafdecay({
-		trunks = {"default:tree"},
+		trunks = {"default:live_tree"},
 		leaves = {"default:apple", "default:leaves"},
 		radius = 2,
 	})

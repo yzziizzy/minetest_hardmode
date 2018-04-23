@@ -34,7 +34,8 @@ cattails, including fluff and roots (craft with axe to get edible roots
 occasionally drop a chunk if coral is dug with a pick
 timer on inventory to kill coral if it lasts too long
 
-fall
+emitter for leaves dropping in fall
+
 
 
 mobs
@@ -57,6 +58,8 @@ growing coral
 have to breed maize
 
 wood processing machine
+
+
 
 
 nodes:

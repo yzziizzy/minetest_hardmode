@@ -20,7 +20,7 @@ minetest.register_alias("mapgen_sandstone", "default:sandstone")
 
 -- Flora
 
-minetest.register_alias("mapgen_tree", "default:tree")
+minetest.register_alias("mapgen_tree", "default:live_tree")
 minetest.register_alias("mapgen_leaves", "default:leaves")
 minetest.register_alias("mapgen_apple", "default:apple")
 minetest.register_alias("mapgen_jungletree", "default:jungletree")
@@ -39,11 +39,73 @@ minetest.register_alias("mapgen_sandstonebrick", "default:sandstonebrick")
 minetest.register_alias("mapgen_stair_sandstone_block", "stairs:stair_sandstone_block")
 
 
+-- content id's for replacement.
+
+minetest.register_on_generated(function(minp, maxp, seed)
+--      if maxp.y > 0 then
+--          return
+--      end
+local c_stone = minetest.get_content_id("default:stone")
+local c_tree = minetest.get_content_id("mapgen_tree")
+local c_jungletree = minetest.get_content_id("mapgen_jungletree")
+local c_pine_tree = minetest.get_content_id("mapgen_pine_tree")
+local c_gravel = minetest.get_content_id("mapgen_gravel")
+local c_live_tree = minetest.get_content_id("default:live_tree")
+local c_live_jungletree = minetest.get_content_id("default:live_jungletree")
+local c_live_pine_tree = minetest.get_content_id("default:live_pine_tree")
+
+
+	local x1 = maxp.x
+	local y1 = maxp.y
+	local z1 = maxp.z
+	local x0 = minp.x
+	local y0 = minp.y
+	local z0 = minp.z
+
+	local vm, emin, emax = minetest.get_mapgen_object("voxelmanip")
+	local area = VoxelArea:new{MinEdge=emin, MaxEdge=emax}
+	local data = vm:get_data()
+	
+--     local sidelen = x1 - x0 + 1
+--     local chulens = {x=sidelen, y=sidelen, z=sidelen}
+--     local minposxyz = {x=x0, y=y0, z=z0}
+--     local minposxz = {x=x0, y=z0}
+
+-- 	local nixyz = 1 -- 3D noise index
+	for z = z0, z1 do -- for each xy plane progressing northwards
+		for y = y0, y1 do -- for each x row progressing upwards
+			local vi = area:index(x0, y, z)
+			for x = x0, x1 do -- for each node do
+				if data[vi] == c_tree then
+					data[vi] = c_live_tree
+				elseif data[vi] == c_jungletree then
+					data[vi] = c_live_jungletree
+				elseif data[vi] == c_pine_tree then
+					data[vi] = c_live_pine_tree
+				end
+				
+				vi = vi + 1
+			end
+		end
+	end
+
+
+
+
+	vm:set_data(data)
+	vm:set_lighting({day=0, night=0})
+	vm:calc_lighting()
+	vm:write_to_map(data)
+end)
+
+		
+			
+			
 --
 -- Register ores
 --
 
--- Mgv6
+-- Mgv6local c_obglass = minetest.get_content_id("default:obsidian_glass")
 
 function default.register_mgv6_ores()
 
@@ -1553,7 +1615,7 @@ function default.register_mgv6_decorations()
 		y_max = 30,
 		decoration = "default:cactus",
 		height = 3,
-	        height_max = 4,
+			height_max = 4,
 	})
 
 	-- Long grasses
