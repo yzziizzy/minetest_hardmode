@@ -131,27 +131,27 @@ function beds.kick_players()
 	end
 end
 
-function beds.skip_night()
-	minetest.set_timeofday(0.23)
-end
+-- function beds.skip_night()
+-- 	minetest.set_timeofday(0.23)
+-- end
 
 function beds.on_rightclick(pos, player)
 	local name = player:get_player_name()
 	local ppos = player:getpos()
 	local tod = minetest.get_timeofday()
 
-	if tod > 0.2 and tod < 0.805 then
-		if beds.player[name] then
-			lay_down(player, nil, nil, false)
-		end
-		minetest.chat_send_player(name, "You can only sleep at night.")
-		return
-	end
+-- 	if tod > 0.2 and tod < 0.805 then
+-- 		if beds.player[name] then
+-- 			lay_down(player, nil, nil, false)
+-- 		end
+-- 		minetest.chat_send_player(name, "You can only sleep at night.")
+-- 		return
+-- 	end
 
 	-- move to bed
 	if not beds.player[name] then
 		lay_down(player, ppos, pos)
-		beds.set_spawns() -- save respawn positions when entering bed
+	--	beds.set_spawns() -- save respawn positions when entering bed
 	else
 		lay_down(player, nil, nil, false)
 	end
@@ -163,13 +163,13 @@ function beds.on_rightclick(pos, player)
 	-- skip the night and let all players stand up
 	if check_in_beds() then
 		minetest.after(2, function()
-			if not is_sp then
-				update_formspecs(is_night_skip_enabled())
-			end
-			if is_night_skip_enabled() then
-				beds.skip_night()
-				beds.kick_players()
-			end
+-- 			if not is_sp then
+-- 				update_formspecs(is_night_skip_enabled())
+-- 			end
+-- 			if is_night_skip_enabled() then
+-- 				beds.skip_night()
+--  				beds.kick_players()
+-- 			end
 		end)
 	end
 end
@@ -177,32 +177,32 @@ end
 
 -- Callbacks
 -- Only register respawn callback if respawn enabled
-if enable_respawn then
-	-- respawn player at bed if enabled and valid position is found
-	minetest.register_on_respawnplayer(function(player)
-		local name = player:get_player_name()
-		local pos = beds.spawn[name]
-		if pos then
-			player:setpos(pos)
-			return true
-		end
-	end)
-end
+-- if enable_respawn then
+-- 	-- respawn player at bed if enabled and valid position is found
+-- 	minetest.register_on_respawnplayer(function(player)
+-- 		local name = player:get_player_name()
+-- 		local pos = beds.spawn[name]
+-- 		if pos then
+-- 			player:setpos(pos)
+-- 			return true
+-- 		end
+-- 	end)
+-- end
 
-minetest.register_on_leaveplayer(function(player)
-	local name = player:get_player_name()
-	lay_down(player, nil, nil, false, true)
-	beds.player[name] = nil
-	if check_in_beds() then
-		minetest.after(2, function()
-			update_formspecs(is_night_skip_enabled())
-			if is_night_skip_enabled() then
-				beds.skip_night()
-				beds.kick_players()
-			end
-		end)
-	end
-end)
+-- minetest.register_on_leaveplayer(function(player)
+-- 	local name = player:get_player_name()
+-- 	lay_down(player, nil, nil, false, true)
+-- 	beds.player[name] = nil
+-- 	if check_in_beds() then
+-- 		minetest.after(2, function()
+-- 			update_formspecs(is_night_skip_enabled())
+-- 			if is_night_skip_enabled() then
+-- 				beds.skip_night()
+-- 				beds.kick_players()
+-- 			end
+-- 		end)
+-- 	end
+-- end)
 
 minetest.register_on_player_receive_fields(function(player, formname, fields)
 	if formname ~= "beds_form" then

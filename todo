@@ -4,7 +4,7 @@ add flint slot on furnace formspec, revert furnace craft recipe to normal
 
 add big list of item weights to burden
 
-fix up campfire, clean up old stuff from more_fire therein 
+BUG: campfire does not shift-click transfer
 
 
 features:
@@ -14,8 +14,6 @@ vomiting (loss of health and food) on chance if drinking dirty water
 copper kettle to boil water
 
 warm beverages to stave off emergency cold
-
-fix cold to determine temp then approach
 
 large cargo boat with attached chest entity that cannot be picked up once placed
 
