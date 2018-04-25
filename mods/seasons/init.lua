@@ -139,8 +139,26 @@ reg_generic("default", "bush_leaves", {
 	nil)
 	
 reg_generic("default", "jungleleaves", nil, nil)
-	
+default.register_leafdecay({
+	trunks = {"default:live_jungletree"},
+	leaves = {
+		"seasons:winter_default_jungleleaves",
+		"seasons:fall_default_jungleleaves",
+		"seasons:spring_default_jungleleaves",
+	},
+	radius = 2,
+})
+
 reg_generic("default", "acacia_leaves", nil, nil)
+default.register_leafdecay({
+	trunks = {"default:acacia_tree"},
+	leaves = {
+		"seasons:winter_default_acacia_leaves",
+		"seasons:fall_default_acacia_leaves",
+		"seasons:spring_default_acacia_leaves",
+	},
+	radius = 2,
+})
 
 --[[
 saplings
@@ -193,6 +211,12 @@ function reg_leaves(ssn)
 
 		after_place_node = default.after_place_leaves,
 	})
+	
+	default.register_leafdecay({
+		trunks = {"default:live_tree", "default:tree"},
+		leaves = {"seasons:"..ssn.."_default_leaves"},
+		radius = 2,
+	})
 end
 reg_leaves("spring")
 reg_leaves("fall")
@@ -222,6 +246,12 @@ function reg_aspen_leaves(ssn)
 		sounds = default.node_sound_leaves_defaults(),
 
 		after_place_node = default.after_place_leaves,
+	})
+	
+	default.register_leafdecay({
+		trunks = {"default:aspen_tree"},
+		leaves = {"seasons:"..ssn.."_default_aspen_leaves"},
+		radius = 3,
 	})
 end
 

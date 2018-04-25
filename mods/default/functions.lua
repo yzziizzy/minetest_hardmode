@@ -343,9 +343,11 @@ end
 
 -- Leafdecay
 -- for trunks
-local function leafdecay_after_destruct(pos, oldnode, def)
-	for _, v in pairs(minetest.find_nodes_in_area(vector.subtract(pos, def.radius),
-			vector.add(pos, def.radius), def.leaves)) do
+local function leafdecay_after_destruct(pos, oldnode, trunk)
+	local radius = default._leafdecay.radii[trunk]
+	local leaves = default._leafdecay.by_trunk[trunk]
+	for _, v in pairs(minetest.find_nodes_in_area(vector.subtract(pos, radius),
+			vector.add(pos, radius), leaves)) do
 		local node = minetest.get_node(v)
 		local timer = minetest.get_node_timer(v)
 		if node.param2 == 0 and not timer:is_started() then
@@ -355,8 +357,10 @@ local function leafdecay_after_destruct(pos, oldnode, def)
 end
 
 -- for leaves
-local function leafdecay_on_timer(pos, def)
-	if minetest.find_node_near(pos, def.radius, def.trunks) then
+local function leafdecay_on_timer(pos, leaf)
+	local radius = default._leafdecay.radii[leaf]
+	local trunks = default._leafdecay.by_leaf[leaf]
+	if minetest.find_node_near(pos, radius, trunks) then
 		return false
 	end
 
@@ -364,10 +368,8 @@ local function leafdecay_on_timer(pos, def)
 	local drops = minetest.get_node_drops(node.name)
 	for _, item in ipairs(drops) do
 		local is_leaf
-		for _, v in pairs(def.leaves) do
-			if v == item then
-				is_leaf = true
-			end
+		if default._leafdecay.by_leaf[item] then
+			is_leaf = true
 		end
 		if minetest.get_item_group(item, "leafdecay_drop") ~= 0 or
 				not is_leaf then
@@ -383,23 +385,54 @@ local function leafdecay_on_timer(pos, def)
 	minetest.check_for_falling(pos)
 end
 
+default._leafdecay = {
+	by_trunk = {},
+	by_leaf = {},
+	radii = {},
+}
+
+function concat(t1,t2)
+	for i=1, #t2 do
+		t1[#t1+1] = t2[i]
+	end
+	
+	return t1
+end
+
 function default.register_leafdecay(def)
 	assert(def.leaves)
 	assert(def.trunks)
 	assert(def.radius)
 	for _, v in pairs(def.trunks) do
-		minetest.override_item(v, {
-			after_destruct = function(pos, oldnode)
-				leafdecay_after_destruct(pos, oldnode, def)
-			end,
-		})
+		-- only override the trunk once
+		if default._leafdecay.by_trunk[v] == nil then
+			minetest.override_item(v, {
+				after_destruct = function(pos, oldnode)
+					leafdecay_after_destruct(pos, oldnode, v)
+				end,
+			})
+			
+			default._leafdecay.radii[v] = def.radius
+			default._leafdecay.by_trunk[v] = {}
+		end
+		
+		concat(default._leafdecay.by_trunk[v], def.leaves)
 	end
+	
 	for _, v in pairs(def.leaves) do
-		minetest.override_item(v, {
-			on_timer = function(pos)
-				leafdecay_on_timer(pos, def)
-			end,
-		})
+		-- only override each leaf once
+		if default._leafdecay.by_leaf[v] == nil then
+			minetest.override_item(v, {
+				on_timer = function(pos)
+					leafdecay_on_timer(pos, v)
+				end,
+			})
+			
+			default._leafdecay.radii[v] = def.radius
+			default._leafdecay.by_leaf[v] = {}
+		end
+		
+		concat(default._leafdecay.by_leaf[v], def.trunks)
 	end
 end
 
