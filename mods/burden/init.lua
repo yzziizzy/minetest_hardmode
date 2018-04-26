@@ -8,6 +8,10 @@ the more you carry the slower you go
 burden = {}
 burden.players = {}
 
+local mod_path = minetest.get_modpath("burden")
+
+dofile(mod_path.."/weights.lua")
+
 
 local base_burden = 1 -- don't mess with this one
 local burden_scale = .004 -- this is the one to adjust that you are looking for
@@ -55,7 +59,9 @@ local function set_burden(player)
 			
 			local factor = 1
 			
-			if nil ~= minetest.registered_tools[name] then
+			if nil ~= burden.weights[name] then
+				factor = burden.weights[name]
+			elseif nil ~= minetest.registered_tools[name] then
 				factor = 1.5
 			elseif nil ~= minetest.registered_craftitems[name] then 
 				factor = 2
