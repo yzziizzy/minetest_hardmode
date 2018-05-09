@@ -5,25 +5,29 @@ local function can_dig(pos, player)
 end
 
 local function allow_metadata_inventory_put(pos, listname, index, stack, player)
-	if minetest.is_protected(pos, player:get_player_name()) then
-		return 0
-	end
-	local meta = minetest.get_meta(pos)
-	local inv = meta:get_inventory()
-	if listname == "fuel" then
-		if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
-			if inv:is_empty("src") then
-				meta:set_string("infotext", "Furnace is empty")
-			end
-			return stack:get_count()
-		else
-			return 0
-		end
-	elseif listname == "src" then
-		return stack:get_count()
-	elseif listname == "dst" then
-		return 0
-	end
+-- 	if minetest.is_protected(pos, player:get_player_name()) then
+-- 		return 0
+-- 	end
+-- 	local meta = minetest.get_meta(pos)
+-- 	local inv = meta:get_inventory()
+-- 	if listname == "fuel" then
+-- 		if minetest.get_craft_result({method="fuel", width=1, items={stack}}).time ~= 0 then
+-- 			if inv:is_empty("src") then
+-- 				meta:set_string("infotext", "Furnace is empty")
+-- 			end
+-- 			return stack:get_count()
+-- 		else
+-- 			return 0
+-- 		end
+-- 	elseif listname == "src" then
+-- 		return stack:get_count()
+-- 	elseif listname == "dst" then
+-- 		return 0
+-- 	end
+	
+	
+	
+	return stack:get_count()
 end
 
 local function allow_metadata_inventory_move(pos, from_list, from_index, to_list, to_index, count, player)
@@ -49,6 +53,37 @@ local function swap_node(pos, name)
 	minetest.swap_node(pos, node)
 end
 
+
+local function get_best_craft_recipe(out_item)
+	
+	local in_count = 1000
+	local out_count = 1000
+	
+	function sortfn(a, b)
+		if #a.items == #b.items then
+			return a.width < b.width
+		else
+			return #a.items < #b.items
+		end
+		
+	end
+	
+	
+	local recipes = minetest.get_all_craft_recipes(proto)
+	local normal_list = {}
+	for _,r in ipairs(recipes) do
+		if r.type == "normal" then
+			table.insert(normal_list, r)
+		end
+	end
+	
+	table.sort(normal_list, sortfn)
+	
+	
+	return normal_list[1]
+end
+
+
 local function machine_node_timer(pos, elapsed)
 	--
 	-- Inizialize metadata
@@ -70,12 +105,15 @@ local function machine_node_timer(pos, elapsed)
 		return
 	end
 	
-	local recip = minetest.get_craft_recipe(proto)
-	if nil == recip then
-		return
-	end
+-- 	local recip = minetest.get_all_craft_recipes(proto)
+-- 	if nil == recip or recip.items == nil then
+-- 		return
+-- 	end
+	local recip = get_best_craft_recipe(proto)
+	
 	
 	local needed = {}
+	local needed_groups = {}
 	
 	for i,item in ipairs(recip.items) do
 		print("item - "..item)
@@ -83,6 +121,7 @@ local function machine_node_timer(pos, elapsed)
 		local name = item
 		if item:sub(1, 6) == "group:" then
 			local group = item:sub(7)
+			table.insert(needed_groups, group)
 			
 			for iname, idef in pairs(minetest.registered_items) do
 				if idef.groups[group] ~= nil then
@@ -92,7 +131,7 @@ local function machine_node_timer(pos, elapsed)
 			end
 		end
 		
-		needed[name] = (needed[name] or 0) + 1 
+		needed[item] = (needed[item] or 0) + 1 
 		inv:set_stack("needs", i, name)
 	end
 	
@@ -105,26 +144,43 @@ local function machine_node_timer(pos, elapsed)
 	)
 	
 	local has_cnt = 0
+	print("hoppers found: "..#hoppers)
 	for _,hop in ipairs(hoppers) do
 		local hmeta = minetest.get_meta(hop)
 		local hinv = hmeta:get_inventory()
 		
 		local hlist = hinv:get_list("main")
-		if #hlist == 0 then
-			return
+		if #hlist > 0 then
+			
+		
+			
+			local hitem = hlist[1]
+			if hitem then
+				local hitem_name = hitem:get_name()
+			
+				print("hopper item: ".. hitem_name)
+				
+				if needed[hitem] then
+					print("needed item")
+				else
+					for _,g in ipairs(needed_groups) do 
+						if minetest.registered_items[hitem_name].groups[g] ~= nil then
+							print("found needed group item")
+						end
+					end
+				end
+				
+			end
+		else
+			print("hopper empty")
 		end
-		
-		local hitem_name = hlist[0]:get_name()
-		print("hopper item: ".. hitem_name)
-		
-		
 		
 	end
 	
 	
 	
 	if 1 == 1 then
-	return
+		return
 	end
 	
 	local cookable, cooked
@@ -381,14 +437,14 @@ minetest.register_node("machines:hopper", {
 		local inv = meta:get_inventory()
 		inv:set_size('main', 8)
 	end,
-
+--[[
 	on_metadata_inventory_move = function(pos)
 		--minetest.get_node_timer(pos):start(1.0)
 	end,
 	on_metadata_inventory_put = function(pos)
 		-- start timer function, it will sort out whether furnace can burn or not.
 		--minetest.get_node_timer(pos):start(1.0)
-	end,
+	end,]]
 	on_blast = function(pos)
 		local drops = {}
 		default.get_inventory_drops(pos, "main", drops)
@@ -397,9 +453,9 @@ minetest.register_node("machines:hopper", {
 		return drops
 	end,
 
-	allow_metadata_inventory_put = allow_metadata_inventory_put,
-	allow_metadata_inventory_move = allow_metadata_inventory_move,
-	allow_metadata_inventory_take = allow_metadata_inventory_take,
+-- 	allow_metadata_inventory_put = allow_metadata_inventory_put,
+-- 	allow_metadata_inventory_move = allow_metadata_inventory_move,
+-- 	allow_metadata_inventory_take = allow_metadata_inventory_take,
 })
 
 
