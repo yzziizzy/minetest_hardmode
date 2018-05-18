@@ -81,7 +81,7 @@ local function set_burden(player)
 	
 	inv:set_list("main", main)
 	
-	print("total_bonus: ".. total_bonus)
+	---print("total_bonus: ".. total_bonus)
 	player:set_physics_override({
 		speed = base_speed - (b * burden_scale) + total_bonus,
 	})
@@ -126,19 +126,19 @@ minetest.node_dig = function(pos, node, digger)
 		local wielded = digger and digger:get_wielded_item()
 		
 		if wielded then
-		print("wielded " .. wielded:get_name())
+		--print("wielded " .. wielded:get_name())
 		else 
-		print("wielded - nil")
+		--print("wielded - nil")
 		end
 		local drops = minetest.get_node_drops(node, wielded and wielded:get_name())
 		
 		local took_item = false
 		
 		for _,st in pairs(drops)  do
-			print(st)
+			--print(st)
 			if inv:room_for_item("main", st) then
 				took_item = true
-				print("st ".. st)
+				--print("st ".. st)
 				local leftovers = inv:add_item("main", st)
 				
 				if leftovers ~= nil then
@@ -146,7 +146,7 @@ minetest.node_dig = function(pos, node, digger)
 					--break
 				end
 			else
-				print("breaking 1\n")
+				--print("breaking 1\n")
 				break
 			end
 		end
@@ -206,7 +206,7 @@ minetest.node_dig = function(pos, node, digger)
 		
 		return
 	end
-	printf("shouldn't be here")
+	printf("burden: shouldn't be here")
 	-- non-players
 	old_node_dig(pos, node, digger)
 end

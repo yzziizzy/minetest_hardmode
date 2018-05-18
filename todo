@@ -6,12 +6,16 @@ add big list of item weights to burden
 
 BUG: campfire does not shift-click transfer
 
+make crops die in winter, adjust growing time to fit year
+
 
 features:
 -----------------------
 thirst, must drink fresh water
 vomiting (loss of health and food) on chance if drinking dirty water
 copper kettle to boil water
+
+disease for crops
 
 warm beverages to stave off emergency cold
 
