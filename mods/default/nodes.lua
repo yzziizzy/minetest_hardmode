@@ -2680,7 +2680,7 @@ minetest.register_node("default:ladder_steel", {
 	sunlight_propagates = true,
 	walkable = false,
 	climbable = true,
-	stack_max = 8,
+	stack_max = 15,
 	is_ground_content = false,
 	selection_box = {
 		type = "wallmounted",

@@ -14,7 +14,7 @@ dofile(mod_path.."/weights.lua")
 
 
 local base_burden = 1 -- don't mess with this one
-local burden_scale = .004 -- this is the one to adjust that you are looking for
+local burden_scale = .006 -- this is the one to adjust that you are looking for
 local base_speed = 1.5 -- a little faster than normal, when carrying nothing
 
 
