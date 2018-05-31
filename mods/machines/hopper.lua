@@ -65,6 +65,16 @@ minetest.register_node("machines:hopper", {
 
 
 
+minetest.register_craft({
+	output = 'machines:hopper',
+	recipe = {
+		{'default:tin_ingot', '',                  'default:tin_ingot'},
+		{'default:tin_ingot', '',                  'default:tin_ingot'},
+		{'',                  'default:tin_ingot', ''},
+	}
+})
+
+
 
 
 

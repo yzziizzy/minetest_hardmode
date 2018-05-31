@@ -285,8 +285,11 @@ local function fancy_machine_node_timer(pos, elapsed)
 		"machines:hopper"
 	)
 	
+	print(dump(needed_groups))
+	
 	local has_cnt = 0
 	local has = {}
+	local to_take = {}
 	print("hoppers found: "..#hoppers)
 	for _,hop in ipairs(hoppers) do
 		local hmeta = minetest.get_meta(hop)
@@ -295,6 +298,7 @@ local function fancy_machine_node_timer(pos, elapsed)
 		local hlist = hinv:get_list("main")
 		if #hlist > 0 then
 			
+			-- bug - needs to search for first item
 			local hitem = hlist[1]
 			if hitem then
 				local hitem_name = hitem:get_name()
@@ -304,11 +308,15 @@ local function fancy_machine_node_timer(pos, elapsed)
 				if needed[hitem_name] then
 					print("needed item")
 					has[hitem_name] = (has[hitem_name] or 0) + hitem:get_count()
+					to_take[hitem_name] = (to_take[hitem_name] or 0) + needed[hitem_name]
 				else
-					for _,g in pairs(needed_groups) do 
+					for g,cnt in pairs(needed_groups) do 
+						print("ng: ".. g)
 						if minetest.registered_items[hitem_name].groups[g] ~= nil then
 							print("found needed group item")
-							has[hitem] = (has[hitem] or 0) + hlist:get_count()
+							
+							has[hitem_name] = (has[hitem_name] or 0) + hitem:get_count()
+							to_take[hitem_name] = (to_take[hitem_name] or 0) + cnt
 						end
 					end
 				end
@@ -332,8 +340,11 @@ local function fancy_machine_node_timer(pos, elapsed)
 	
 	if some_missing == 1 then
 		print("not enough supply for machine at "..pos.x..","..pos.y..","..pos.z)
+		swap_node(pos, "machines:machine")
 		return false
 	end
+	
+	print(dump(to_take))
 	
 	-- take the inputs to craft an item 
 	for _,hop in ipairs(hoppers) do
@@ -342,13 +353,13 @@ local function fancy_machine_node_timer(pos, elapsed)
 		
 		--local hlist = hinv:get_list("main")
 		
-		for name,qty in pairs(needed) do
+		for name,qty in pairs(to_take) do
 			local taken = hinv:remove_item("main", name .. " " .. qty) 
 			print("took ".. taken:get_count() .. " of " .. taken:get_name())
 			
-			needed[name] = qty - taken:get_count()
-			if needed[name] == 0 then
-				needed[name] = nil
+			to_take[name] = qty - taken:get_count()
+			if to_take[name] == 0 then
+				to_take[name] = nil
 			end
 		end
 	end
@@ -360,7 +371,12 @@ local function fancy_machine_node_timer(pos, elapsed)
 	local outmeta = minetest.get_meta({x=pos.x, y=pos.y - 1, z=pos.z})
 	local outinv = outmeta:get_inventory()
 	
-	outinv:add_item("main", proto)
+	local rem = outinv:add_item("main", work.recipe.output)
+	if rem and rem:get_count() > 0 then
+		swap_node(pos, "machines:machine")
+		return false
+	end
+	
 	
 	return true
 end
@@ -438,9 +454,19 @@ end
 minetest.register_node("machines:machine_on", {
 	description = "Machine",
 	tiles = {
-		"default_furnace_top.png", "default_furnace_bottom.png",
-		"default_bronze_block.png", "default_furnace_side.png",
-		"default_furnace_side.png", "default_furnace_front.png"
+		"default_tin_block.png", "default_tin_block.png",
+		"default_bronze_block.png", "default_tin_block.png",
+		"default_tin_block.png", 
+		{
+			image = "default_furnace_front_active.png",
+			backface_culling = false,
+			animation = {
+				type = "vertical_frames",
+				aspect_w = 16,
+				aspect_h = 16,
+				length = 1.5
+			},
+		}
 	},
 	paramtype2 = "facedir",
 	groups = {cracky=2},
@@ -605,6 +631,17 @@ minetest.register_node("machines:machine", {
 	
 	
 })
+
+
+minetest.register_craft({
+	output = 'machines:machine',
+	recipe = {
+		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
+		{'default:bronze_ingot', 'default:mese_crystal', 'default:bronze_ingot'},
+		{'default:bronze_ingot', 'default:bronze_ingot', 'default:bronze_ingot'},
+	}
+})
+
 
 
 
