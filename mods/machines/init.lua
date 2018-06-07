@@ -241,17 +241,51 @@ local function fancy_machine_node_timer(pos, elapsed)
 
 	local meta = minetest.get_meta(pos)
 	local fuel_time = meta:get_float("fuel_time") or 0
+	local fuel_burned = meta:get_float("fuel_burned") or 0
 	local make_time = meta:get_float("make_time") or 0
 	local fuel_totaltime = meta:get_float("fuel_totaltime") or 0
 
 	
 	local inv = meta:get_inventory()
-
+	
+	local burned = elapsed
+	local turn_off = false
+	
 	local protolist = inv:get_stack("proto", 1)
 	
 	-- check fuel
+	if fuel_time > 0 and fuel_burned + elapsed < fuel_time then
 
+		fuel_burned = fuel_burned + elapsed
+		meta:set_float("fuel_burned", fuel_burned + elapsed)
+	else
+		local t = grab_fuel(inv)
+		if t <= 0 then -- out of fuel
+			--print("out of fuel")
+			meta:set_float("fuel_time", 0)
+			meta:set_float("fuel_burned", 0)
+			
+			burned = fuel_time - fuel_burned
+			
+			turn_off = true
+		else
+			-- roll into the next period
+			fuel_burned =  elapsed - (fuel_time - fuel_burned)
+			fuel_time = t
+			
+			--print("fuel remaining: " .. (fuel_time - fuel_burned))
+		
+			meta:set_float("fuel_time", fuel_time)
+			meta:set_float("fuel_burned", fuel_burned)
+		end
+	end
 	
+	
+	-- todo: move to a better spot
+	if turn_off then
+		swap_node(pos, "machines:machine")
+		return
+	end
 	
 	
 	proto = protolist:get_name()

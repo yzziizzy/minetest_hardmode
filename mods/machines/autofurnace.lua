@@ -143,7 +143,7 @@ local function af_on_timer(pos, elapsed)
 		else
 			local t = grab_fuel(inv)
 			if t <= 0 then -- out of fuel
-				print("out of fuel")
+				--print("out of fuel")
 				meta:set_float("fuel_time", 0)
 				meta:set_float("fuel_burned", 0)
 				
@@ -155,7 +155,7 @@ local function af_on_timer(pos, elapsed)
 				fuel_burned =  elapsed - (fuel_time - fuel_burned)
 				fuel_time = t
 				
-				print("fuel remaining: " .. (fuel_time - fuel_burned))
+				--print("fuel remaining: " .. (fuel_time - fuel_burned))
 			
 				meta:set_float("fuel_time", fuel_time)
 				meta:set_float("fuel_burned", fuel_burned)
