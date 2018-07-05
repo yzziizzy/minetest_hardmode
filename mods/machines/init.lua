@@ -267,6 +267,7 @@ local function fancy_machine_node_timer(pos, elapsed)
 			
 			burned = fuel_time - fuel_burned
 			
+			print("no fuel")
 			turn_off = true
 		else
 			-- roll into the next period
@@ -296,6 +297,7 @@ local function fancy_machine_node_timer(pos, elapsed)
 	
 	local tmp = meta:get_string("work")
 	if not tmp then
+		print("no prototype selected")
 		-- no prototype or recipe selected
 		return
 	end
@@ -303,6 +305,7 @@ local function fancy_machine_node_timer(pos, elapsed)
 	local work = minetest.deserialize(tmp)
 	if not work or not work.needed then
 		-- missing or bad data
+		print("missing work data")
 		return
 	end
 	

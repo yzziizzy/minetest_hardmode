@@ -81,13 +81,13 @@ function cold.update_cold(player, new_lvl)
 	if ppos.y < COLD_DEEP_Y then -- it gets warmer as you go really deep
 		
 		env = (ppos.y + COLD_DEEP_Y) * COLD_DEEP_RATE
-		print("deep: ".. env)
+		--print("deep: ".. env)
 	elseif ppos.y < COLD_UNDERGROUND_Y then -- caves near the surface have even, cool temp
 		
 		-- approach the underground temp
 -- 		env = (COLD_UNDERGROUND_TEMP - lvl) * .5
 		env = COLD_UNDERGROUND_TEMP -- now it's just chilly down there
-		print("und: ".. env)
+		--print("und: ".. env)
 	else -- normal surface calculations
 		local season, season_time = seasons.get_season()
 		local seas = 0
@@ -110,14 +110,14 @@ function cold.update_cold(player, new_lvl)
 					seas * COLD_SEASON_FACTOR
 				
 	
-		print("\n cold sun: " .. (sun * COLD_SUN_FACTOR))
-		print(" cold lat: " .. (lat * COLD_LAT_FACTOR))
-		print(" cold elv: " .. (elv * COLD_ELV_RATE))
-		print(" cold ssn: " .. (seas * COLD_SEASON_FACTOR))
+		--print("\n cold sun: " .. (sun * COLD_SUN_FACTOR))
+		--print(" cold lat: " .. (lat * COLD_LAT_FACTOR))
+		--print(" cold elv: " .. (elv * COLD_ELV_RATE))
+		--print(" cold ssn: " .. (seas * COLD_SEASON_FACTOR))
 	end
 	
 	-- TODO need to check if the player is swimming
-	print("cold env: " .. env)
+	--print("cold env: " .. env)
 	
 	local pos
 	local coldfactor = 0
@@ -194,7 +194,7 @@ function cold.update_cold(player, new_lvl)
 	end
 	
 	local effective_temp = coldfactor + env + clothes
-	print("effective_temp: "..effective_temp)
+	--print("effective_temp: "..effective_temp)
 	
 	if new_lvl > 0 then
 		 lvl = new_lvl
@@ -204,7 +204,7 @@ function cold.update_cold(player, new_lvl)
 		SHIVER_RATE = .2
 		local diff = (effective_temp - lvl)
 		local lvl_d = diff * sigmoid(diff)
-		print("lvl_d: "..lvl_d)
+		--print("lvl_d: "..lvl_d)
 		lvl = lvl + lvl_d
 	end
 	
@@ -216,8 +216,8 @@ function cold.update_cold(player, new_lvl)
 	end
 	cold[name].lvl = lvl
 	
-	print("coldfactor: " .. (coldfactor))
-	print("coldness: " ..lvl)
+	--print("coldfactor: " .. (coldfactor))
+	--print("coldness: " ..lvl)
 	
 	if lvl >= COLD_SHIVER_LVL then 
 		local hp = player:get_hp()
@@ -299,10 +299,10 @@ local function cyclic_update()
 	for _, player in ipairs(minetest.get_connected_players()) do
 		update(player)
 	end
-	minetest.after(5, cyclic_update)
+	minetest.after(7, cyclic_update)
 end
 
-minetest.after(5, cyclic_update)
+minetest.after(7, cyclic_update)
 
 
 

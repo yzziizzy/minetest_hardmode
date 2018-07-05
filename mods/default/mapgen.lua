@@ -617,6 +617,50 @@ function default.register_ores()
 		y_min          = -31000,
 		y_max          = 0,
 	})
+	
+	minetest.register_ore({
+		ore_type       = "scatter",
+		ore            = "default:coalblock",
+		wherein        = "default:stone",
+		clust_scarcity = 16 * 16 * 16,
+		clust_num_ores = 14,
+		clust_size     = 5,
+		y_min          = -31000,
+		y_max          = -1024,
+	})
+	
+	minetest.register_ore({
+		ore_type       = "scatter",
+		ore            = "default:coalblock",
+		wherein        = "default:stone",
+		clust_scarcity = 8 * 8 * 8,
+		clust_num_ores = 3,
+		clust_size     = 3,
+		y_min          = -31000,
+		y_max          = -128,
+	})
+	
+	minetest.register_ore({
+		ore_type       = "scatter",
+		ore            = "default:coalblock",
+		wherein        = "default:stone",
+		clust_scarcity = 16 * 16 * 16,
+		clust_num_ores = 8,
+		clust_size     = 4,
+		y_min          = -31000,
+		y_max          = -256,
+	})
+	
+	minetest.register_ore({
+		ore_type       = "scatter",
+		ore            = "default:coalblock",
+		wherein        = "default:stone",
+		clust_scarcity = 16 * 16 * 16,
+		clust_num_ores = 10,
+		clust_size     = 5,
+		y_min          = -31000,
+		y_max          = -512,
+	})
 
 	-- Iron
 
@@ -651,6 +695,17 @@ function default.register_ores()
 		clust_size     = 6,
 		y_min          = -31000,
 		y_max          = -64,
+	})
+	
+	minetest.register_ore({
+		ore_type       = "scatter",
+		ore            = "default:stone_with_iron",
+		wherein        = "default:stone",
+		clust_scarcity = 16 * 16 * 16,
+		clust_num_ores = 8,
+		clust_size     = 3,
+		y_min          = -31000,
+		y_max          = -512,
 	})
 
 	-- Tin

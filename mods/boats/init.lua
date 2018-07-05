@@ -562,10 +562,10 @@ local boat_steel = {
 	physical = true,
 	-- Warning: Do not change the position of the collisionbox top surface,
 	-- lowering it causes the boat to fall through the world if underwater
-	collisionbox = {-2.35, -0.35, -2.35, 02.35, 0.3, 02.35},
+	collisionbox = {-2.35, -01.35, -2.35, 02.35, 0.3, 02.35},
 	visual = "mesh",
-	visual_size = {x=2,y=2,z=2},
-	mesh = "boats_barge.obj",
+	visual_size = {x=8,y=8,z=8},
+	mesh = "cargo_ship.obj",
 	textures = {"default_bronze_block.png"},
 
 	driver = nil,
@@ -573,51 +573,64 @@ local boat_steel = {
 	last_v = 0,
 	removed = false,
 	
-	box = nil,
+	-- box = nil,
 }
 
-local boat_cargo_box = {
-	physical = true,
-	-- Warning: Do not change the position of the collisionbox top surface,
-	-- lowering it causes the boat to fall through the world if underwater
-	collisionbox = {-0.4, -0.4, -0.4, 0.4, 0.4, 0.4},
-	visual = "cube",
-	--visual_size = {x=.4, y=.4, z=.4},
-	textures = {
-		"default_chest_top.png",
-		"default_chest_side.png",
-		"default_chest_side.png",
-		"default_chest_side.png",
-		"default_chest_side.png",
-		"default_chest_front.png",
+
+-- minetest.register_entity("boats:boat_cargo_box", boat_cargo_box)
+
+
+
+
+
+local modpath = minetest.get_modpath("boats")
+local mod_storage = minetest.get_mod_storage()
+
+local boat_data = {}
+
+boat_data.objects = {}
+
+boat_data.next_entity = mod_storage:get_int("next_entity") or 1
+boat_data.entities = minetest.deserialize(mod_storage:get_string("entities")) or {}
+
+if type(boat_data.entities) ~= "table" then
+	boat_data.entities = {}
+end
+
+local function save_data() 
+	--print("saving")
+	mod_storage:set_int("next_entity", boat_data.next_entity);
+	mod_storage:set_string("entities", minetest.serialize(boat_data.entities))
+end
+
+
+local function deploy_boat(boat)
+	local id = boat_data.next_entity
+	boat_data.next_entity = boat_data.next_entity + 1
+	
+	boat.data = boat.data or {}
+	boat.data.id = id
+	boat.data.driver = nil
+	
+	boat_data.objects[id] = boat
+	
+	boat_data.entities[id] = {
+		id = id,
+		inventories = {
+			
+		
 		},
+	}
 
-	driver = nil,
-	v = 0,
-	last_v = 0,
-	removed = false
-}
+	save_data()
+end
 
 
-minetest.register_entity("boats:boat_cargo_box", boat_cargo_box)
 
 
-function boat_steel.on_rightclick(self, clicker)
-	if not clicker or not clicker:is_player() then
-		return
-	end
+local function enter_boat(self, clicker) 
 	local name = clicker:get_player_name()
-	if self.driver and clicker == self.driver then
-		self.driver = nil
-		clicker:set_detach()
-		player_api.player_attached[name] = false
-		player_api.set_animation(clicker, "stand" , 30)
-		local pos = clicker:getpos()
-		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
-		minetest.after(0.1, function()
-			clicker:setpos(pos)
-		end)
-	elseif not self.driver then
+	if not self.driver then
 		local attach = clicker:get_attach()
 		if attach and attach:get_luaentity() then
 			local luaentity = attach:get_luaentity()
@@ -635,20 +648,147 @@ function boat_steel.on_rightclick(self, clicker)
 		end)
 		clicker:set_look_horizontal(self.object:getyaw())
 	end
+
 end
+
+
+local function get_steel_boat_formspec()
+	local state_str = "Sailing"
+	
+	return "" ..
+		"size[10,8;]" ..
+		default.gui_bg ..
+		default.gui_bg_img ..
+		default.gui_slots ..
+		"label[1,1;"..state_str.."]" ..
+		"button[5,1;5,1;board;Board]" ..
+		""
+end
+
+
+function boat_steel.on_rightclick(self, clicker)
+	if not clicker or not clicker:is_player() then
+		return
+	end
+	local name = clicker:get_player_name()
+	if self.driver and clicker == self.driver then
+	
+		-- exit boat
+		self.driver = nil
+		clicker:set_detach()
+		player_api.player_attached[name] = false
+		player_api.set_animation(clicker, "stand" , 30)
+		local pos = clicker:getpos()
+		pos = {x = pos.x, y = pos.y + 0.2, z = pos.z}
+		minetest.after(0.1, function()
+			clicker:setpos(pos)
+		end)
+	else
+		-- show formspec
+		minetest.show_formspec(clicker:get_player_name(), "boats:steel_boat_formQ"..self.data.id, get_steel_boat_formspec(self))
+		
+
+		
+	end
+end
+
+local function splitname(name)
+	local c = string.find(name, "Q")
+	print("c " ..c)
+	return string.sub(name, 1,  c - 1), string.sub(name, c + 1, string.len(name))
+end
+
+minetest.register_on_player_receive_fields(function(player, formname, fields)
+	
+	
+	local formprefix, id = splitname(formname)
+	
+	if formprefix ~= "boats:steel_boat_form" then
+		print("wrong prefix: " .. formname .. " - " .. formprefix)
+		return
+	end
+	
+	
+	
+	if fields.board then
+		id = id + 0
+		local boat = boat_data.objects[id]
+		print("id ".. id)
+		if not boat then
+			print("no boat " .. dump(boat) .. " " .. dump(id))
+			print(dump(boat_data))
+			--enter_boat(boat, player)
+		else
+			enter_boat(boat, player)
+		end
+		return
+	end
+	
+end)
+
+
+minetest.register_node("boats:bollard", {
+	paramtype = "light",
+	description = "Mooring Bollard",
+	tiles = {"default_bronze_block.png",  "default_bronze_block.png", "default_bronze_block.png",
+	         "default_bronze_block.png", "default_bronze_block.png",   "default_bronze_block.png"},
+	node_box = {
+		type = "fixed",
+		fixed = {
+			--11.25
+			{-0.49, -0.5, -0.10, 0.49, 0.5, 0.10},
+			{-0.10, -0.5, -0.49, 0.10, 0.5, 0.49},
+			--22.5
+			{-0.46, -0.5, -0.19, 0.46, 0.5, 0.19},
+			{-0.19, -0.5, -0.46, 0.19, 0.5, 0.46},
+			-- 33.75
+			{-0.416, -0.5, -0.28, 0.416, 0.5, 0.28},
+			{-0.28, -0.5, -0.416, 0.28, 0.5, 0.416},
+			--45
+			{-0.35, -0.5, -0.35, 0.35, 0.5, 0.35},
+		},
+	},
+	selection_box = {
+		type = "fixed",
+		fixed = {
+			{-0.5, -0.5, -0.5, 0.5, 0.5, 0.5},
+		},
+	},
+	drawtype = "nodebox",
+	groups = {cracky=3,oddly_breakable_by_hand=3 },
+	legacy_facedir_simple = true,
+	sounds = default.node_sound_wood_defaults(),
+	on_construct = function(pos)
+		
+	end,
+})
+
+
 
 
 function boat_steel.on_activate(self, staticdata, dtime_s)
 	self.object:set_armor_groups({immortal = 1})
 	if staticdata then
-		self.v = tonumber(staticdata)
-	end
-	self.last_v = self.v
+		self.data = minetest.deserialize(staticdata)
+		
+		if not self.data or not self.data.id then 
+			deploy_boat(self)
+		end
+		print("self.data.id = "..self.data.id)
+		print(dump(self))
+		boat_data.objects[self.data.id] = self
+	else 
+		self.data = {}
+		print("steel boat with no staticdata")
+	end	
+	
+	
+	 
 end
 
 
 function boat_steel.get_staticdata(self)
-	return tostring(self.v)
+	return minetest.serialize(self.data)
 end
 
 
@@ -687,56 +827,58 @@ function boat_steel.on_step(self, dtime)
 	local bp = self.object:getpos()
 	local velo = self.object:getvelocity()
 	bp.y = bp.y + 4
-	--print("lol: " ..self.lol)
-	if not self.box then
-	--	print("adding box")
-		self.box = minetest.add_entity(bp, "boats:boat_cargo_box")
-	--	self.lol = "mej"
-	else
-	--	print("has box")
-		print(yaw)
-		--self.box:setpos(bp)
-		self.box:setyaw(yaw)
-		self.box:setvelocity(velo)
-	
-	end
+
+	local speed = vector.length(velo)
 	
 	if self.driver then
 		local ctrl = self.driver:get_player_control()
 		local yaw = self.object:getyaw()
 		if ctrl.up then
-			self.v = self.v + 0.2
+			self.v = self.v + 0.02
 		elseif ctrl.down then
-			self.v = self.v - 0.2
+			self.v = self.v - 0.02
 		end
 		if ctrl.left then
 			if self.v < 0 then
-				self.object:setyaw(yaw - (1 + dtime) * 0.04)
+				self.object:setyaw(yaw - (1 + dtime) * 0.0005 * speed)
 			else
-				self.object:setyaw(yaw + (1 + dtime) * 0.04)
+				self.object:setyaw(yaw + (1 + dtime) * 0.0005 * speed)
 			end
 		elseif ctrl.right then
 			if self.v < 0 then
-				self.object:setyaw(yaw + (1 + dtime) * 0.04)
+				self.object:setyaw(yaw + (1 + dtime) * 0.0005 * speed)
 			else
-				self.object:setyaw(yaw - (1 + dtime) * 0.04)
+				self.object:setyaw(yaw - (1 + dtime) * 0.0005 * speed)
 			end
 		end
 	end
-
+	
+	local drift = {x=0,y=0,z=0}
+	if speed < .1 then
+		print("drifting")
+		-- float away randomly
+		drift = {
+			x = math.random(5.1, 10.9),
+			y = 0,
+			z = math.random(5.1, 10.9),
+		}
+	end
+	
+	
+	
 	if self.v == 0 and velo.x == 0 and velo.y == 0 and velo.z == 0 then
 		self.object:setpos(self.object:getpos())
 		return
 	end
 	local s = get_sign(self.v)
-	self.v = self.v - 0.002 * s
+	-- self.v = self.v - 0.002 * s
 	if s ~= get_sign(self.v) then
 		self.object:setvelocity({x = 0, y = 0, z = 0})
 		self.v = 0
 		return
 	end
-	if math.abs(self.v) > 15 then
-		self.v = 15 * get_sign(self.v)
+	if math.abs(self.v) > 4 then
+		self.v = 4 * get_sign(self.v)
 	end
 
 	local p = self.object:getpos()
@@ -781,7 +923,7 @@ function boat_steel.on_step(self, dtime)
 			end
 		end
 	end
-	self.object:setvelocity(new_velo)
+	self.object:setvelocity(vector.add(new_velo, drift))
 	self.object:setacceleration(new_acce)
 	
 
@@ -820,6 +962,7 @@ minetest.register_craftitem("boats:boat_steel", {
 		end
 		pointed_thing.under.y = pointed_thing.under.y + 0.5
 		boat = minetest.add_entity(pointed_thing.under, "boats:boat_steel")
+		--deploy_boat(boat)
 		if boat then
 			if placer then
 				boat:setyaw(placer:get_look_horizontal())
@@ -830,14 +973,7 @@ minetest.register_craftitem("boats:boat_steel", {
 				itemstack:take_item()
 			end
 			
-			--local p = {x=pointed_thing.under.x, y=pointed_thing.under.y, z=pointed_thing.under.z}
-			
-		--	//boat.box = minetest.add_entity(p, "boats:boat_cargo_box")
--- 			if box then
--- 				box:set_attach(boat, "", {x=5,y=8,z=0}, {x=0,y=0,z=0})
--- 			else
--- 				print("failed to attach cargo box")
--- 			end
+
 		end
 		return itemstack
 	end,
