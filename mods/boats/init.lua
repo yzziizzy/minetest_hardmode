@@ -597,10 +597,45 @@ if type(boat_data.entities) ~= "table" then
 	boat_data.entities = {}
 end
 
+
+-- recreate detached inventories
+for id,v in pairs(boat_data.entities) do
+	local inv1 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold1")
+	local inv2 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold2")
+	local inv3 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold3")
+	
+	inv1:set_size(5 * 8)
+	inv2:set_size(5 * 8)
+	inv3:set_size(5 * 8)
+	
+	if v.inventories then
+		inv1:set_lists(v.inventories[1])
+		inv2:set_lists(v.inventories[2])
+		inv3:set_lists(v.inventories[3])
+	end
+end
+
+
+local function serialize_inventory(id, n) 
+	local inv = minetest.get_inventory({type="detached", name="boats_steel_boat_"..id.."_hold"..n})
+	return inv:get_lists()
+end
+
+
 local function save_data() 
 	--print("saving")
 	mod_storage:set_int("next_entity", boat_data.next_entity);
+	
+	for id,v in pairs(boat_data.entities) do
+		v.inventories[1] = serialize_inventory(id, 1)
+		v.inventories[2] = serialize_inventory(id, 2)
+		v.inventories[3] = serialize_inventory(id, 3)
+	end
+	
 	mod_storage:set_string("entities", minetest.serialize(boat_data.entities))
+	
+
+	
 end
 
 
@@ -616,12 +651,18 @@ local function deploy_boat(boat)
 	
 	boat_data.entities[id] = {
 		id = id,
-		inventories = {
-			
-		
-		},
+		inventories = {}
 	}
+	
+	local inv1 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold1")
+	local inv2 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold2")
+	local inv3 = minetest.create_detached_inventory("boats_steel_boat_"..id.."_hold3")
 
+	inv1:set_size(5 * 8)
+	inv2:set_size(5 * 8)
+	inv3:set_size(5 * 8)
+	
+	
 	save_data()
 end
 
@@ -666,6 +707,28 @@ local function get_steel_boat_formspec()
 end
 
 
+local function get_steel_boat_inv_formspec(boat, hold)
+	local state_str = "Sailing"
+	
+	return "size[8,8.5]"..
+		default.gui_bg..
+		default.gui_bg_img..
+		default.gui_slots..
+		"list[context;hold;4,2;3,2;]"..
+		"image[2,2.5;1,1;default_furnace_fire_bg.png]"..
+
+		"list[current_player;main;0,4.25;8,1;]"..
+		"list[current_player;main;0,5.5;8,3;8]"..
+		"listring[context;dst]"..
+		"listring[current_player;main]"..
+		"listring[context;src]"..
+		"listring[current_player;main]"..
+		"listring[context;fuel]"..
+		"listring[current_player;main]"..
+		default.get_hotbar_bg(0, 4.25)
+end
+
+
 function boat_steel.on_rightclick(self, clicker)
 	if not clicker or not clicker:is_player() then
 		return
@@ -694,7 +757,8 @@ end
 
 local function splitname(name)
 	local c = string.find(name, "Q")
-	print("c " ..c)
+	if c == nil then return nil, nil end
+	--print("c " ..c)
 	return string.sub(name, 1,  c - 1), string.sub(name, c + 1, string.len(name))
 end
 
@@ -704,7 +768,7 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	local formprefix, id = splitname(formname)
 	
 	if formprefix ~= "boats:steel_boat_form" then
-		print("wrong prefix: " .. formname .. " - " .. formprefix)
+		--print("wrong prefix: " .. formname .. " - " .. formprefix)
 		return
 	end
 	
@@ -722,6 +786,9 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 			enter_boat(boat, player)
 		end
 		return
+	elseif fields.hold_a then
+			minetest.show_formspec(player:get_player_name(), "boats:steel_boat_formQ"..self.data.id, get_steel_boat_inv_formspec(self, "a"))
+	
 	end
 	
 end)
@@ -853,17 +920,17 @@ function boat_steel.on_step(self, dtime)
 		end
 	end
 	
-	local drift = {x=0,y=0,z=0}
-	if speed < .1 then
-		print("drifting")
-		-- float away randomly
-		drift = {
-			x = math.random(5.1, 10.9),
-			y = 0,
-			z = math.random(5.1, 10.9),
-		}
-	end
-	
+-- 	local drift = {x=0,y=0,z=0}
+-- 	if speed < .1 then
+-- 		print("drifting")
+-- 		-- float away randomly
+-- 		drift = {
+-- 			x = math.random(5.1, 10.9),
+-- 			y = 0,
+-- 			z = math.random(5.1, 10.9),
+-- 		}
+-- 	end
+-- 	
 	
 	
 	if self.v == 0 and velo.x == 0 and velo.y == 0 and velo.z == 0 then
@@ -923,7 +990,7 @@ function boat_steel.on_step(self, dtime)
 			end
 		end
 	end
-	self.object:setvelocity(vector.add(new_velo, drift))
+	self.object:setvelocity(new_velo)
 	self.object:setacceleration(new_acce)
 	
 

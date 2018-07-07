@@ -45,7 +45,7 @@ local function grab_fuel(inv)
 	
 	local list = inv:get_list("fuel")
 	for i,st in ipairs(list) do
-	print(st:get_name())
+	--print(st:get_name())
 		local fuel, remains
 		fuel, remains = minetest.get_craft_result({
 			method = "fuel", 
@@ -93,13 +93,13 @@ end
 local function put_item(pos, item) 
 	local meta = minetest.get_meta(pos)
 	if meta == nil then
-		print("af: wasting item for lack of output")
+		--print("af: wasting item for lack of output")
 		return
 	end
 	
 	local inv = meta:get_inventory()
 	if inv == nil then
-		print("af: wasting item for lack of output inventory")
+		--print("af: wasting item for lack of output inventory")
 		return
 	end
 	
@@ -128,9 +128,9 @@ local function af_on_timer(pos, elapsed)
 	local burned = elapsed
 	local turn_off = false
 	
-	print("\n\naf timer")
-	print("fuel_burned: " .. fuel_burned)
-	print("fuel_time: " .. fuel_time)
+	--print("\n\naf timer")
+	--print("fuel_burned: " .. fuel_burned)
+	--print("fuel_time: " .. fuel_time)
 	
 -- 	if fuel_burned <= fuel_time or fuel_time == 0 then
 -- 		-- use fuel
@@ -173,19 +173,19 @@ local function af_on_timer(pos, elapsed)
 		if cooked ~= nil then
 			cook_item = cooked.item:to_table()
 			cook_time_remaining = cooked.time
-			print(cook_item)
+			--print(cook_item)
 			meta:set_string("cook_item", minetest.serialize(cook_item))
 			meta:set_float("cook_time_remaining", cooked.time)
 		else
 			-- nothing to cook, carry on
-			print("nothing to cook")
+			--print("nothing to cook")
 			cook_item = nil
 			meta:set_string("cook_item", "")
 		end
 		
 		
 	else
-		print(cook_item)
+		--print(cook_item)
 		cook_item = minetest.deserialize(cook_item)
 	end
 	
@@ -193,11 +193,11 @@ local function af_on_timer(pos, elapsed)
 	if cook_item ~= nil and burned > 0 then
 		
 		local remain = cook_time_remaining - burned
-		print("remain: ".. remain);
+		--print("remain: ".. remain);
 		if remain > 0 then
 			meta:set_float("cook_time_remaining", remain)
 		else
-			print("finished")
+			--print("finished")
 			-- cooking is finished
 			put_item({x=pos.x, y=pos.y - 1, z=pos.z}, cook_item.name .. " " .. (cook_item.count or 1))
 			
